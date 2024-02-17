@@ -5,11 +5,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-public class Cinemalog extends JFrame {
+public class cinemalog extends JFrame {
     private JTextField username;
     private JPasswordField password;
     private int loginAttempts = 3;
-    public Cinemalog() {
+    public cinemalog() {
         initializeUI();
     }
     private void initializeUI() {
@@ -106,6 +106,6 @@ public class Cinemalog extends JFrame {
         return username.equals("admin") && password.equals("admin123");
     }
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Cinemalog());
+        SwingUtilities.invokeLater(() -> new cinemalog());
     }
 }
