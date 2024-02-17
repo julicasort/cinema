@@ -1,0 +1,476 @@
+package cinemalog;
+
+import javax.swing.*;
+
+import java.awt.*;
+
+import java.awt.event.ActionEvent;
+
+import java.awt.event.ActionListener;
+
+import java.util.ArrayList;
+
+import java.util.List;
+ 
+public class cinemafood {
+
+    private JPanel[] foodPanels;
+
+    private JLabel[] foodLabels;
+
+    private JTextField[] quantityFields;
+
+    private JLabel[] priceLabels;
+
+    private ImageIcon[] foodImages;
+
+    private String[] foodItems;
+
+    private String[] foodFilePaths;
+
+    private JButton[] plusButtons;
+
+    private JButton[] minusButtons;
+
+    private JButton[] moreInfoButtons; 
+
+    private int[] prices;
+
+    private List<Order> orders;
+
+    private JTextPane bookingSummary;
+
+    private int totalCost;
+ 
+    public cinemafood() {
+
+        JFrame frame = new JFrame("Cinema Food Selection");
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+ 
+       
+
+        JPanel panel = new JPanel(new GridLayout(3, 3, 10, 10));
+
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+ 
+        JPanel summaryPanel = new JPanel(new BorderLayout());
+
+        bookingSummary = new JTextPane();
+
+        bookingSummary.setEditable(false);
+
+        bookingSummary.setFont(new Font("Helvetica", Font.PLAIN, 14)); 
+
+        JScrollPane scrollPane = new JScrollPane(bookingSummary);
+
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        summaryPanel.add(scrollPane, BorderLayout.CENTER);
+
+        JButton clearButton = new JButton("Clear");
+
+        clearButton.addActionListener(new ActionListener() {
+
+            @Override
+
+            public void actionPerformed(ActionEvent e) {
+
+                clearBookingSummary();
+
+            }
+
+        });
+
+        summaryPanel.add(clearButton, BorderLayout.SOUTH);
+ 
+        
+
+        foodItems = new String[]{
+
+                "Popcorn", "Fries", "Hotdog", "Doritos", "Cheese Burger",
+
+                "Mountain Dew", "Coke Zero", "Sprite", "Bottled Water"
+
+        };
+ 
+        
+
+        foodFilePaths = new String[]{
+
+                "C:\\Users\\Cedric Torres\\Downloads\\popcorn.jpg",
+
+                "C:\\Users\\Cedric Torres\\Downloads\\fries.jpg",
+
+                "C:\\Users\\Cedric Torres\\Downloads\\sandwich.jpg",
+
+                "C:\\Users\\Cedric Torres\\Downloads\\doritos.jpg",
+
+                "C:\\Users\\Cedric Torres\\Downloads\\burger.jpg",
+
+                "C:\\Users\\Cedric Torres\\Downloads\\montaine.jpg",
+
+                "C:\\Users\\Cedric Torres\\Downloads\\coke zero.jpg",
+
+                "C:\\Users\\Cedric Torres\\Downloads\\sprite.jpg",
+
+                "C:\\Users\\Cedric Torres\\Downloads\\water.jpg"
+
+        };
+ 
+       
+
+        prices = new int[]{80, 45, 85, 160, 65, 50, 50, 50, 35};
+ 
+        foodPanels = new JPanel[foodItems.length];
+
+        foodLabels = new JLabel[foodItems.length];
+
+        quantityFields = new JTextField[foodItems.length];
+
+        priceLabels = new JLabel[foodItems.length];
+
+        foodImages = new ImageIcon[foodItems.length];
+
+        plusButtons = new JButton[foodItems.length];
+
+        minusButtons = new JButton[foodItems.length];
+
+        moreInfoButtons = new JButton[foodItems.length]; 
+
+        orders = new ArrayList<>();
+ 
+        
+
+        loadImages();
+ 
+        
+
+        for (int i = 0; i < foodItems.length; i++) {
+
+            foodPanels[i] = new JPanel(new BorderLayout());
+
+            foodLabels[i] = new JLabel(foodItems[i], foodImages[i], JLabel.CENTER);
+
+            foodLabels[i].setHorizontalTextPosition(JLabel.CENTER);
+
+            foodLabels[i].setVerticalTextPosition(JLabel.BOTTOM);
+
+            foodPanels[i].add(foodLabels[i], BorderLayout.CENTER);
+ 
+            
+
+            priceLabels[i] = new JLabel("Price: " + prices[i] + ".00", JLabel.CENTER);
+
+            foodPanels[i].add(priceLabels[i], BorderLayout.SOUTH);
+ 
+            JPanel quantityPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+            minusButtons[i] = new JButton("-");
+
+            minusButtons[i].addActionListener(new MinusButtonListener(i));
+
+            quantityPanel.add(minusButtons[i]);
+ 
+            quantityFields[i] = new JTextField("0", 3);
+
+            quantityFields[i].setEditable(false);
+
+            quantityFields[i].setHorizontalAlignment(JTextField.CENTER);
+
+            quantityPanel.add(quantityFields[i]);
+ 
+            plusButtons[i] = new JButton("+");
+
+            plusButtons[i].addActionListener(new PlusButtonListener(i));
+
+            quantityPanel.add(plusButtons[i]);
+ 
+            foodPanels[i].add(quantityPanel, BorderLayout.SOUTH);
+ 
+            
+
+            if (foodItems[i].equals("Popcorn") || foodItems[i].equals("Fries")) {
+
+                moreInfoButtons[i] = new JButton("More Info");
+
+                moreInfoButtons[i].addActionListener(new MoreInfoButtonListener(i));
+
+                JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+                infoPanel.add(moreInfoButtons[i]);
+
+                foodPanels[i].add(infoPanel, BorderLayout.NORTH);
+
+            } else if (foodItems[i].equals("Cheese Burger")) { 
+
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+                minusButtons[i] = new JButton("-");
+
+                minusButtons[i].addActionListener(new MinusButtonListener(i));
+
+                buttonPanel.add(minusButtons[i]);
+ 
+                plusButtons[i] = new JButton("+");
+
+                plusButtons[i].addActionListener(new PlusButtonListener(i));
+
+                buttonPanel.add(plusButtons[i]);
+ 
+                foodPanels[i].add(buttonPanel, BorderLayout.SOUTH);
+
+            }
+ 
+            panel.add(foodPanels[i]);
+
+        }
+ 
+        
+
+        displayBookingSummary();
+ 
+        
+
+        frame.add(panel, BorderLayout.CENTER);
+
+        frame.add(summaryPanel, BorderLayout.EAST);
+
+        frame.pack();
+
+        frame.setLocationRelativeTo(null);
+
+        frame.setVisible(true);
+
+    }
+ 
+    
+
+    private void loadImages() {
+
+        for (int i = 0; i < foodItems.length; i++) {
+
+            ImageIcon icon = new ImageIcon(foodFilePaths[i]);
+
+            Image scaledImage = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+
+            foodImages[i] = new ImageIcon(scaledImage);
+
+        }
+
+    }
+ 
+    
+
+    class PlusButtonListener implements ActionListener {
+
+        private int index;
+ 
+        public PlusButtonListener(int index) {
+
+            this.index = index;
+
+        }
+ 
+        @Override
+
+        public void actionPerformed(ActionEvent e) {
+
+            int quantity = Integer.parseInt(quantityFields[index].getText());
+
+            quantity++;
+
+            quantityFields[index].setText(String.valueOf(quantity));
+
+            updateBookingSummary(foodItems[index], 1, prices[index]);
+
+        }
+
+    }
+ 
+    
+
+    class MinusButtonListener implements ActionListener {
+
+        private int index;
+ 
+        public MinusButtonListener(int index) {
+
+            this.index = index;
+
+        }
+ 
+        @Override
+
+        public void actionPerformed(ActionEvent e) {
+
+            int quantity = Integer.parseInt(quantityFields[index].getText());
+
+            if (quantity > 0) {
+
+                quantity--;
+
+                quantityFields[index].setText(String.valueOf(quantity));
+
+                updateBookingSummary(foodItems[index], -1, prices[index]);
+
+            }
+
+        }
+
+    }
+ 
+    
+
+    class MoreInfoButtonListener implements ActionListener {
+
+        private int index;
+ 
+        public MoreInfoButtonListener(int index) {
+
+            this.index = index;
+
+        }
+ 
+        @Override
+
+        public void actionPerformed(ActionEvent e) {
+
+
+            String message = "You can choose from these variants at any of our counters on the day of the screening:\n" +
+
+                    "Flavors:\n" +
+
+                    "Plain\n" +
+
+                    "BBQ\n" +
+
+                    "Sour Cream";
+
+            JOptionPane.showMessageDialog(null, message, "More Info: " + foodItems[index], JOptionPane.INFORMATION_MESSAGE);
+
+        }
+
+    }
+ 
+    private void updateBookingSummary(String foodItem, int quantity, int price) {
+
+        boolean exists = false;
+
+        for (Order order : orders) {
+
+            if (order.getFoodItem().equals(foodItem)) {
+
+                order.setQuantity(order.getQuantity() + quantity);
+
+                exists = true;
+
+                break;
+
+            }
+
+        }
+
+        if (!exists && quantity > 0) {
+
+            orders.add(new Order(foodItem, quantity, price));
+
+        }
+
+        displayBookingSummary();
+
+    }
+ 
+    private void displayBookingSummary() {
+
+        StringBuilder summary = new StringBuilder("<html><b>Booking Summary</b><br>");
+
+        totalCost = 0;
+
+        for (Order order : orders) {
+
+            summary.append(order.getFoodItem()).append(": ").append(order.getQuantity()).append(" x ").append(order.getPrice()).append(" pesos = ").append(order.getPrice() * order.getQuantity()).append(" pesos<br>");
+
+            totalCost += order.getPrice() * order.getQuantity();
+
+        }
+
+        summary.append("<b>Total Cost:</b> ").append(totalCost).append(" pesos</html>");
+
+        bookingSummary.setContentType("text/html");
+
+        bookingSummary.setText(summary.toString());
+
+    }
+ 
+    private void clearBookingSummary() {
+
+        orders.clear();
+
+        displayBookingSummary();
+
+    }
+ 
+    public static void main(String[] args) {
+
+        SwingUtilities.invokeLater(cinemafood::new);
+
+    }
+
+}
+ 
+class Order {
+
+    private String foodItem;
+
+    private int quantity;
+
+    private int price;
+ 
+    public Order(String foodItem, int quantity, int price) {
+
+        this.foodItem = foodItem;
+
+        this.quantity = quantity;
+
+        this.price = price;
+
+    }
+ 
+    public String getFoodItem() {
+
+        return foodItem;
+
+    }
+ 
+    public void setFoodItem(String foodItem) {
+
+        this.foodItem = foodItem;
+
+    }
+ 
+    public int getQuantity() {
+
+        return quantity;
+
+    }
+ 
+    public void setQuantity(int quantity) {
+
+        this.quantity = quantity;
+
+    }
+ 
+    public int getPrice() {
+
+        return price;
+
+    }
+ 
+    public void setPrice(int price) {
+
+        this.price = price;
+
+    }
+
+}
