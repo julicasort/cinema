@@ -1,0 +1,111 @@
+
+package cinemalog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+public class Cinemalog extends JFrame {
+    private JTextField username;
+    private JPasswordField password;
+    private int loginAttempts = 3;
+    public Cinemalog() {
+        initializeUI();
+    }
+    private void initializeUI() {
+        setTitle("Cinema Login");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        getContentPane().setBackground(Color.decode("#1F0202")); // Set background color to #3533CB
+        setLayout(new BorderLayout());
+        // Load the logo image
+        ImageIcon imageIcon = new ImageIcon("C:\\Users\\Cedric Torres\\Downloads\\INFOTECH (2).png"); // Path to your image file
+        // Create a label to display the image
+        JLabel imageLabel = new JLabel(imageIcon);
+        add(imageLabel, BorderLayout.WEST);
+        // Create panel for login components
+        JPanel loginPanel = new JPanel(new GridBagLayout());
+        loginPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        loginPanel.setBackground(new Color(31, 2, 2)); // Custom background color
+        loginPanel.setOpaque(true);
+        // Create GridBagConstraints for layout
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(10, 5, 5, 5); // Increase top inset for the "Cinema Booking Ticket" label
+        // Cinema booking ticket label
+        JLabel bookingLabel = new JLabel("Cinema Booking Ticket");
+        bookingLabel.setFont(bookingLabel.getFont().deriveFont(Font.BOLD, 20f)); // Increase font size
+        bookingLabel.setForeground(Color.WHITE);
+        loginPanel.add(bookingLabel, gbc);
+        // Username label
+        gbc.gridy++;
+        gbc.insets = new Insets(5, 5, 5, 5); // Reset insets for subsequent components
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setForeground(Color.WHITE);
+        loginPanel.add(usernameLabel, gbc);
+        // Username text field
+        gbc.gridy++;
+        username = new JTextField(15);
+        loginPanel.add(username, gbc);
+        // Password label
+        gbc.gridy++;
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setForeground(Color.WHITE);
+        loginPanel.add(passwordLabel, gbc);
+        // Password text field
+        gbc.gridy++;
+        password = new JPasswordField(15);
+        loginPanel.add(password, gbc);
+        // Login button
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER; // Center the button
+        JButton loginButton = new JButton("Log in");
+        loginButton.setBackground(new Color(97, 212, 195)); // Custom button color
+        loginButton.setForeground(Color.WHITE);
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                onLoginButtonClick();
+            }
+        });
+        loginPanel.add(loginButton, gbc);
+        add(loginPanel, BorderLayout.CENTER);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+    
+    private void onLoginButtonClick() {
+        String uname = username.getText();
+        char[] passwordChars = password.getPassword();
+        String pw = new String(passwordChars);
+        if (authenticate(uname, pw)) {
+            JOptionPane.showMessageDialog(this, "Login Successful");
+            Cinemahome cinemahome = new Cinemahome();
+            cinemahome.setVisible(true);
+            setVisible(false);
+            dispose();
+        // Redirect to booking page or perform other actions
+        } else {
+            loginAttempts--;
+            if (loginAttempts > 0) {
+                JOptionPane.showMessageDialog(this, "Login Failed. You have " + loginAttempts + " attempts left.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Login attempts exceeded. Account Locked.");
+                System.exit(0);
+            }
+        }
+        password.setText("");
+    }
+
+    private boolean authenticate(String username, String password) {
+        // Replace this with your actual authentication logic
+        return username.equals("admin") && password.equals("admin123");
+    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Cinemalog());
+    }
+}
