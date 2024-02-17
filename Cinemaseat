@@ -1,0 +1,148 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package cinemalog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Cinemaseat extends JFrame {
+    private String selectedBranch;
+    private String selectedTime;
+    private int mouseX, mouseY;
+
+    public Cinemaseat(String selectedBranch, String selectedTime) {
+        this.selectedBranch = selectedBranch;
+        this.selectedTime = selectedTime;
+
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setUndecorated(true);
+        setLayout(null); // Use null layout for absolute positioning
+
+        JPanel redPanel = new JPanel();
+        redPanel.setBackground(Color.RED);
+        redPanel.setBounds(0, 0, 800, 40);
+
+        JPanel blackPanel = new JPanel();
+        blackPanel.setBackground(Color.BLACK);
+        blackPanel.setBounds(0, 40, 800, 560);
+
+        JPanel seatsinmid = new JPanel();
+        seatsinmid.setLayout(new GridLayout(7, 9, 3, 3)); // Changed to 20 columns
+        seatsinmid.setBackground(Color.BLACK);
+        seatsinmid.setBounds(5, 230, 790, 300);
+
+        JLabel screen = new JLabel("SCREEN");
+        screen.setFont(new Font("Helvetica", Font.BOLD, 20));
+        screen.setForeground(Color.BLACK);
+        screen.setBackground(Color.WHITE);
+        screen.setOpaque(true);
+        screen.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        screen.setHorizontalAlignment(JLabel.CENTER);
+        screen.setBounds(10, 42, 780, 40);
+        
+        JLabel Title = new JLabel("SELECT SEATS");
+        Title.setFont(new Font("Helvetica", Font.PLAIN, 20));
+        Title.setForeground(Color.BLACK);
+        Title.setBounds(335, 0, 780, 40);
+
+        JButton proceed = new JButton("Proceed");
+        proceed.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        proceed.setForeground(Color.BLACK);
+        proceed.setBackground(new Color(230, 22, 16));
+        proceed.setBorder(BorderFactory.createLineBorder(new Color(230, 22, 16)));
+        proceed.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        proceed.setBounds(670, 550, 100, 30);
+        proceed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
+        JButton back = new JButton("Back");
+        back.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        back.setForeground(Color.BLACK);
+        back.setBackground(new Color(230, 22, 16));
+        back.setBorder(BorderFactory.createLineBorder(new Color(230, 22, 16)));
+        back.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        back.setBounds(30, 550, 100, 30);
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Cinemapay branch = new Cinemapay();
+                dispose();
+            }
+        });
+
+        // Add seats to seatsinmid
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 9; j++) {
+                if ((j == 2 || j == 7) && (i >= 0 && i < 7)) {
+                    // Add a gap of 3 columns
+                    for (int k = 0; k < 1; k++) {
+                        JPanel gap = new JPanel();
+                        gap.setBackground(Color.BLACK);
+                        seatsinmid.add(gap);
+                    }
+                }
+
+                JLabel seat = new JLabel((char) ('A' + i) + "" + (j + 1));
+                seat.setFont(new Font("Helvetica", Font.PLAIN, 14));
+                seat.setForeground(Color.BLACK);
+                seat.setBackground(Color.WHITE);
+                seat.setOpaque(true);
+                seat.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                seat.setHorizontalAlignment(JLabel.CENTER);
+                seat.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                seat.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        JLabel clickedSeatLabel = (JLabel) e.getSource();
+                        if (clickedSeatLabel.getBackground() == Color.RED) {
+                            clickedSeatLabel.setBackground(Color.WHITE);
+                        } else {
+                            clickedSeatLabel.setBackground(Color.RED);
+                        }
+                    }
+                });
+                seatsinmid.add(seat);
+            }
+        }
+
+        // Add mouse listeners for dragging the frame
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseX = e.getX();
+                mouseY = e.getY();
+            }
+        });
+
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int deltaX = e.getX() - mouseX;
+                int deltaY = e.getY() - mouseY;
+                setLocation(getLocation().x + deltaX, getLocation().y + deltaY);
+            }
+        });
+        add(Title);
+        add(proceed);
+        add(back);
+        add(seatsinmid);
+        add(screen);
+        add(redPanel);
+        add(blackPanel);
+
+        setVisible(true); // Moved setVisible(true) to the end
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Cinemaseat("", "").setVisible(true));
+    }
+}
