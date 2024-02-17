@@ -1,0 +1,128 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package cinemalog;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URL;
+import javax.imageio.ImageIO;
+ 
+public class cinemahome extends JFrame {
+ 
+    public cinemahome() {
+        setTitle("CINEMA TECH");
+        setSize(850, 850); // Custom size
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+ 
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(31, 2, 2));
+
+ 
+        add(headerPanel, BorderLayout.NORTH);
+
+ 
+        JPanel mainPanel = new JPanel(new BorderLayout());
+ 
+        JPanel nowShowingPanel = new JPanel(new BorderLayout());
+        nowShowingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel nowShowingLabel = new JLabel("NOW SHOWING");
+        nowShowingLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        nowShowingPanel.add(nowShowingLabel, BorderLayout.NORTH);
+
+ 
+        JPanel nowShowingMoviesPanel = new JPanel(new GridLayout(0, 3)); // GridLayout with 5 columns
+        // Add image URLs and descriptions for each movie
+        nowShowingMoviesPanel.add(createMoviePanel("Aquaman and The Lost Kingdom", "https://m.media-amazon.com/images/M/MV5BODgwMzA0NGUtNGQ2MC00MzA5LTlhNWUtMmM5YmJjMzYwMzc1XkEyXkFqcGdeQXVyMTY3ODkyNDkz._V1_.jpg", "AQUAMAN AND THE LOST KINGDOM   (PG)\nAfter failing to defeat Aquaman the first time, Black Manta wields the power of the mythic Black Trident to unleash an ancient and malevolent force. Hoping to end his reign of terror, Aquaman forges an unlikely alliance with his brother, Orm, the former king of Atlantis. Setting aside their differences, they join forces to protect their kingdom and save the world from irreversible destruction.\nGenre: Action/Adventure/Fantasy\nDirector: James Wan\nCast: Jason Momoa, Amber Heard, Nicole Kidman\nRun Time:  2hr 4min"));
+        nowShowingMoviesPanel.add(createMoviePanel("Wonka", "https://m.media-amazon.com/images/M/MV5BNDM4NTk0NjktZDJhMi00MmFmLTliMzEtN2RkZDY2OTNiMDgzXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_FMjpg_UX1000_.jpg", "WONKA  (G)\nArmed with nothing but a hatful of dreams, young chocolatier Willy Wonka manages to change the world, one delectable bite at a time.\nGenre: Adventure/Comedy/Family\nDirector: Paul King\nCast: Timothee Chalamet, Hugh Grant, Rowan Atkinson\nRun Time: 1hr 56min"));
+        nowShowingMoviesPanel.add(createMoviePanel("The Beekeeper", "https://relasi.news/wp-content/uploads/2024/01/images-15-02.jpeg", "THE BEEKEEPER  (R-13)\nOne man's brutal campaign for vengeance takes on national stakes after it's revealed he's a former operative of a powerful and clandestine organization known as Beekeepers.\nGenre: Action/Thriller\nDirector: David Ayer\nCast: Jason Statham, Josh Hutcherson, Amber Sienna\nRun Time: 1hr 45min"));
+        nowShowingMoviesPanel.add(createMoviePanel("Rewind", "https://m.media-amazon.com/images/M/MV5BOTVlNWEyNmMtYmI0ZC00NWJlLTgyZGItMmE5MWYxNTAyZDRlXkEyXkFqcGdeQXVyNTI5NjIyMw@@._V1_FMjpg_UX1000_.jpg", "REWIND  (PG)\nMary loves John her entire life. After years of marriage, John's priorities change, straining their relationship and leading to a tragic accident that takes Mary's life. An extraordinary proposition allows John to rewind time.\nGenre: Drama/Romance\nDirector: Mae Czarina Cruz-Alviar\nCast: Dingdong Dantes, Marian Rivers, Coney Reyes\nRun Time: 1hr 52min"));
+        nowShowingMoviesPanel.add(createMoviePanel("Thanksgiving", "https://m.media-amazon.com/images/M/MV5BOGZhOGJjZTAtOTJmYS00ZTk2LTgxYWEtNjM3ZmUxMjY2NWFiXkEyXkFqcGdeQXVyNjU2NTI4MjE@._V1_FMjpg_UX1000_.jpg", "THANKSGIVING  (R-18)\nAn axe-wielding maniac terrorizes residents of Plymouth, Massachusetts, after a Black Friday riot ends in tragedy. Picking off victims one by one, the seemingly random revenge killings soon become part of a larger, sinister plan.\nGenre: Horror/Mystery/Thriller\nDirector: Eli Roth\nCast: Patrick Dempsey, Ty Olsson, Gina Gershon\nRun Time: 1hr 46min"));
+        nowShowingMoviesPanel.add(createMoviePanel("The Boy and the Heron", "https://m.media-amazon.com/images/M/MV5BZjZkNThjNTMtOGU0Ni00ZDliLThmNGUtZmMxNWQ3YzAxZTQ1XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_FMjpg_UX1000_.jpg", "THE BOY AND THE HERON  (PG)\nA young boy named Mahito, yearning for his mother, ventures into a world shared by the living and the dead. There, death comes to an end, and life finds a new beginning. A semi-autobiographical fantasy about life, death, and creation, in tribute to friendship, from the mind of Hayao Miyazaki.\nGenre: Animation/Adventure/Drama\nDirector: Hayao Miyazaki\nCast: Masaki Suda, Soma Santoki, Takuya Kimura\nRun Time: 2hr 4min"));
+        nowShowingMoviesPanel.add(createMoviePanel("No Way Up", "https://m.media-amazon.com/images/M/MV5BMTEyOTQzZjgtMDM1OC00MWMxLWI2ZGUtYWUwOTQxNTRmZTU0XkEyXkFqcGdeQXVyNTU1MDIzMzg@._V1_FMjpg_UX1000_.jpg", "NO WAY UP  (PG)\nCharacters from different backgrounds are thrown together when the plane they're travelling on crashes into the Pacific Ocean. A nightmare fight for survival ensues with the air supply running out and dangers creeping in from all sides.\nGenre: Action/Adventure/Drama\nDirector: Claudio Fäh\nCast: Phyllis Logan, Colm Meaney, Will Attenborough\nRun Time: 1hr 31min"));
+        nowShowingMoviesPanel.add(createMoviePanel("Migration", "https://m.media-amazon.com/images/M/MV5BYTIxZDM5YWItM2Y1My00ODg5LTkzNjAtMWFlZTNlODg0MzEyXkEyXkFqcGdeQXVyMTA5ODEyNTc5._V1_FMjpg_UX1000_.jpg", "MIGRATION  (G)\nA family of ducks decides to leave the safety of a New England Pond for an adventurous trip to Jamaica. However, their well-laid plans quickly go awry when they get lost and wind up in New York City. The experience soon inspires them to expand their horizons, open themselves up to new friends, and accomplish more than they ever thought possible.\nGenre: Animation/Action/Adventure\nDirector: Benjamin Renner\nCast: Danny DeVito, Elizabeth Banks, Kumail Nanjiani\nRun Time: 1hr 31min"));
+        nowShowingMoviesPanel.add(createMoviePanel("Spider-Man: No Way Home", "https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg", "SPIDER-MAN: NO WAY HOME  (PG)\nWith Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man.\nGenre: Action/Adventure/Fantasy\nDirector: Jon Watts\nCast: Tom Holland, Zendaya, Benedict Cumberbatch\nRun Time: 2hr 28min"));
+        nowShowingMoviesPanel.add(createMoviePanel("Jujutsu Kaisen 0", "https://m.media-amazon.com/images/M/MV5BODM0NmVjMzUtOTJhNi00N2ZhLWFkYmMtYmZmNjRiY2M1YWY4XkEyXkFqcGdeQXVyOTgxOTA5MDg@._V1_.jpg", "JUJUTSU KAISEN 0  (PG)\nThe prequel to Jujutsu Kaisen (2020), where a high schooler gains control of an extremely powerful cursed spirit and gets enrolled in the Tokyo Prefectural Jujutsu High School by Jujutsu Sorcerers.\nGenre: Animation/Action/Fantasy\nDirector: Seong-Hu Park\nCast: Yuuta Okkutsu, Satoru Gojo, Getou Suguru\nRun Time: 1hr 45min"));
+ 
+        JScrollPane nowShowingScrollPane = new JScrollPane(nowShowingMoviesPanel);
+        nowShowingPanel.add(nowShowingScrollPane, BorderLayout.CENTER);
+        mainPanel.add(nowShowingPanel, BorderLayout.CENTER);
+        add(mainPanel, BorderLayout.CENTER);
+        setVisible(true);
+    }
+ 
+    private JPanel createMoviePanel(String movieTitle, String imageUrl, String movieInfo) {
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setPreferredSize(new Dimension(270, 370)); // Set preferred size for the panel
+    panel.setBackground(new Color(31, 2, 2)); // Set background color
+ 
+    // Create a JLabel to hold HTML content
+    JLabel imageLabel = new JLabel("<html><img src='" + imageUrl + "' width='230' height='280'></html>");
+    imageLabel.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // Show movie information when the image is clicked
+            MovieDetails movieDetails = new MovieDetails(movieTitle, imageUrl, movieInfo);
+            movieDetails.setVisible(true);
+        }
+    });
+    panel.add(imageLabel, BorderLayout.CENTER);
+ 
+    return panel;
+}
+ 
+    private JButton createTransparentButton(String text, ActionListener listener) {
+        JButton button = new JButton("<html><u>" + text + "</u></html>");
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.addActionListener(listener);
+        return button;
+    }
+ 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(cinemahome::new);
+    }
+}
+ 
+class MovieDetails extends JFrame {
+ 
+    public MovieDetails(String movieTitle, String imageUrl, String movieInfo) {
+        setTitle(movieTitle);
+        setSize(500, 400); // Custom size
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+ 
+        JPanel panel = new JPanel(new BorderLayout());
+ 
+        JLabel posterLabel = new JLabel();
+        try {
+            URL url = new URL(imageUrl);
+            Image image = ImageIO.read(url);
+            if (image != null) {
+                ImageIcon icon = new ImageIcon(image.getScaledInstance(200, 250, Image.SCALE_SMOOTH));
+                posterLabel.setIcon(icon);
+            } else {
+                System.err.println("Failed to load movie poster: " + movieTitle);
+            }
+        } catch (IOException e) {
+        }
+ 
+        JTextArea infoArea = new JTextArea(movieInfo);
+        infoArea.setEditable(false);
+        infoArea.setLineWrap(true); // Enable text wrapping
+        infoArea.setWrapStyleWord(true); // Wrap at word boundaries
+        JScrollPane scrollPane = new JScrollPane(infoArea);
+        scrollPane.setPreferredSize(new Dimension(300, 200)); // Set preferred size
+ 
+        panel.add(posterLabel, BorderLayout.WEST);
+        panel.add(scrollPane, BorderLayout.CENTER);
+        add(panel);
+    }
+}
