@@ -1,8 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cinemalog;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -12,29 +9,51 @@ import java.io.IOException;
 import java.net.URL;
 import javax.imageio.ImageIO;
  
-public class cinemahome extends JFrame {
+public class Cinemahome extends JFrame {
  
-    public cinemahome() {
+    public Cinemahome() {
         setTitle("CINEMA TECH");
-        setSize(850, 850); // Custom size
+        setSize(815, 830); // Custom size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
  
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(31, 2, 2));
-
+ 
+        JLabel cinemaLabel = new JLabel("CINEMA TECH");
+        cinemaLabel.setForeground(Color.WHITE); // Set text color to blue
+        headerPanel.add(cinemaLabel, BorderLayout.CENTER);
+        
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(createTransparentButton("Home", e -> {
+        }));
+        buttonPanel.add(createTransparentButton("Now Showing", e -> {
+        }));
+   
+        buttonPanel.add(createTransparentButton("Book Tickets", e -> {
+            new Cinemapay();
+        }));
+        
+        
+ 
+        headerPanel.add(buttonPanel, BorderLayout.EAST);
  
         add(headerPanel, BorderLayout.NORTH);
-
+ 
  
         JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(31, 2, 2));
  
         JPanel nowShowingPanel = new JPanel(new BorderLayout());
         nowShowingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         JLabel nowShowingLabel = new JLabel("NOW SHOWING");
         nowShowingLabel.setHorizontalAlignment(SwingConstants.LEFT);
         nowShowingPanel.add(nowShowingLabel, BorderLayout.NORTH);
-
+        
+        
  
         JPanel nowShowingMoviesPanel = new JPanel(new GridLayout(0, 3)); // GridLayout with 5 columns
         // Add image URLs and descriptions for each movie
@@ -48,6 +67,7 @@ public class cinemahome extends JFrame {
         nowShowingMoviesPanel.add(createMoviePanel("Migration", "https://m.media-amazon.com/images/M/MV5BYTIxZDM5YWItM2Y1My00ODg5LTkzNjAtMWFlZTNlODg0MzEyXkEyXkFqcGdeQXVyMTA5ODEyNTc5._V1_FMjpg_UX1000_.jpg", "MIGRATION  (G)\nA family of ducks decides to leave the safety of a New England Pond for an adventurous trip to Jamaica. However, their well-laid plans quickly go awry when they get lost and wind up in New York City. The experience soon inspires them to expand their horizons, open themselves up to new friends, and accomplish more than they ever thought possible.\nGenre: Animation/Action/Adventure\nDirector: Benjamin Renner\nCast: Danny DeVito, Elizabeth Banks, Kumail Nanjiani\nRun Time: 1hr 31min"));
         nowShowingMoviesPanel.add(createMoviePanel("Spider-Man: No Way Home", "https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg", "SPIDER-MAN: NO WAY HOME  (PG)\nWith Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man.\nGenre: Action/Adventure/Fantasy\nDirector: Jon Watts\nCast: Tom Holland, Zendaya, Benedict Cumberbatch\nRun Time: 2hr 28min"));
         nowShowingMoviesPanel.add(createMoviePanel("Jujutsu Kaisen 0", "https://m.media-amazon.com/images/M/MV5BODM0NmVjMzUtOTJhNi00N2ZhLWFkYmMtYmZmNjRiY2M1YWY4XkEyXkFqcGdeQXVyOTgxOTA5MDg@._V1_.jpg", "JUJUTSU KAISEN 0  (PG)\nThe prequel to Jujutsu Kaisen (2020), where a high schooler gains control of an extremely powerful cursed spirit and gets enrolled in the Tokyo Prefectural Jujutsu High School by Jujutsu Sorcerers.\nGenre: Animation/Action/Fantasy\nDirector: Seong-Hu Park\nCast: Yuuta Okkutsu, Satoru Gojo, Getou Suguru\nRun Time: 1hr 45min"));
+        
  
         JScrollPane nowShowingScrollPane = new JScrollPane(nowShowingMoviesPanel);
         nowShowingPanel.add(nowShowingScrollPane, BorderLayout.CENTER);
@@ -58,8 +78,10 @@ public class cinemahome extends JFrame {
  
     private JPanel createMoviePanel(String movieTitle, String imageUrl, String movieInfo) {
     JPanel panel = new JPanel(new BorderLayout());
-    panel.setPreferredSize(new Dimension(270, 370)); // Set preferred size for the panel
+    panel.setPreferredSize(new Dimension(270, 350)); // Set preferred size for the panel
     panel.setBackground(new Color(31, 2, 2)); // Set background color
+    
+    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
  
     // Create a JLabel to hold HTML content
     JLabel imageLabel = new JLabel("<html><img src='" + imageUrl + "' width='230' height='280'></html>");
@@ -88,41 +110,58 @@ public class cinemahome extends JFrame {
     }
  
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(cinemahome::new);
+        Cinemahome frame = new Cinemahome();
+        frame.setLocationRelativeTo(null); // Set the frame to appear in the center of the screen
+        frame.setVisible(true);
+
     }
 }
  
 class MovieDetails extends JFrame {
- 
+
     public MovieDetails(String movieTitle, String imageUrl, String movieInfo) {
         setTitle(movieTitle);
-        setSize(500, 400); // Custom size
+        setSize(550, 650); // Custom size
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
- 
+
         JPanel panel = new JPanel(new BorderLayout());
- 
+
         JLabel posterLabel = new JLabel();
         try {
             URL url = new URL(imageUrl);
             Image image = ImageIO.read(url);
             if (image != null) {
-                ImageIcon icon = new ImageIcon(image.getScaledInstance(200, 250, Image.SCALE_SMOOTH));
+                ImageIcon icon = new ImageIcon(image.getScaledInstance(250, 300, Image.SCALE_SMOOTH));
                 posterLabel.setIcon(icon);
             } else {
                 System.err.println("Failed to load movie poster: " + movieTitle);
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
- 
+
         JTextArea infoArea = new JTextArea(movieInfo);
         infoArea.setEditable(false);
         infoArea.setLineWrap(true); // Enable text wrapping
         infoArea.setWrapStyleWord(true); // Wrap at word boundaries
         JScrollPane scrollPane = new JScrollPane(infoArea);
         scrollPane.setPreferredSize(new Dimension(300, 200)); // Set preferred size
- 
+
+        // Add Buy Now button
+        JButton buyNowButton = new JButton("Buy Now");
+        buyNowButton.addActionListener(e -> {
+            new Cinemapay();
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(buyNowButton);
+
         panel.add(posterLabel, BorderLayout.WEST);
         panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
         add(panel);
+
+        // Center the frame on the screen
+        setLocationRelativeTo(null);
     }
 }
