@@ -1,0 +1,123 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package cinemalog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+
+public class Cinemacomingsoon extends JFrame {
+
+    public Cinemacomingsoon() {
+        setTitle("Coming Soon");
+        setSize(815, 830); // Custom size
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
+        
+                JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(31, 2, 2));
+ 
+        JLabel cinemaLabel = new JLabel("CINEMA TECH");
+        cinemaLabel.setForeground(Color.WHITE); // Set text color to blue
+        headerPanel.add(cinemaLabel, BorderLayout.CENTER);
+        
+        
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(createTransparentButton("Home", e -> {
+            new Cinemahome();
+        }));
+        buttonPanel.add(createTransparentButton("Now Showing", e -> {
+            new Cinemanowshowing();
+        }));
+   
+        buttonPanel.add(createTransparentButton("Book Tickets", e -> {
+            new Cinemapay();
+        }));
+        
+        
+ 
+        headerPanel.add(buttonPanel, BorderLayout.EAST);
+ 
+        add(headerPanel, BorderLayout.NORTH);
+ 
+
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(31, 2, 2));
+
+        JPanel comingSoonPanel = new JPanel(new BorderLayout());
+        comingSoonPanel.setBackground(new Color(31, 2, 2));
+        JLabel comingSoonLabel = new JLabel("Coming Soon");
+        comingSoonLabel.setForeground(Color.WHITE); // Set text color
+        comingSoonLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Set font and size
+        comingSoonLabel.setHorizontalAlignment(SwingConstants.LEFT); // Center align text
+        comingSoonPanel.add(comingSoonLabel, BorderLayout.NORTH);
+
+        JPanel comingSoonMoviesPanel = new JPanel(new GridLayout(0, 3, 10, 10)); // Grid layout with 3 columns
+        comingSoonMoviesPanel.setBackground(new Color(31, 2, 2));
+
+        comingSoonMoviesPanel.add(createMoviePanel("The Shawshank Redemption", "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg", "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.\nGenre: Drama\nDirector: Frank Darabont\nStars: Tim Robbins, Morgan Freeman, Bob Gunton\nRun Time: 2hr 22min"));
+        comingSoonMoviesPanel.add(createMoviePanel("The Godfather", "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_FMjpg_UX1000_.jpg", "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.\nGenre: Crime/Drama\nDirector: Francis Ford Coppola\nStars: Marlon Brando, Al Pacino, James Caan\nRun Time: 2hr 55min"));
+        comingSoonMoviesPanel.add(createMoviePanel("The Dark Knight", "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_FMjpg_UX1000_.jpg", "When the menace known as The Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.\nGenre: Action/Crime/Drama\nDirector: Christopher Nolan\nStars: Christian Bale, Heath Ledger, Aaron Eckhart\nRun Time: 2hr 32min"));
+        comingSoonMoviesPanel.add(createMoviePanel("Schindler's List", "https://m.media-amazon.com/images/M/MV5BNDE4OTMxMTctNmRhYy00NWE2LTg3YzItYTk3M2UwOTU5Njg0XkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_FMjpg_UX1000_.jpg", "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.\nGenre: Biography/Drama/History\nDirector: Steven Spielberg\nStars: Liam Neeson, Ralph Fiennes, Ben Kingsley\nRun Time: 3hr 15min"));
+        comingSoonMoviesPanel.add(createMoviePanel("The Lord of the Rings: The Return of the King", "https://m.media-amazon.com/images/M/MV5BNzA5ZDNlZWMtM2NhNS00NDJjLTk4NDItYTRmY2EwMWZlMTY3XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_FMjpg_UX1000_.jpg", "THE LORD OF THE RINGS: THE RETURN OF THE KING (PG-13)\n" + "Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.\n" + "Genre: Adventure/Drama/Fantasy\n" + "Director: Peter Jackson\n" + "Cast: Elijah Wood, Viggo Mortensen, Ian McKellen\n" + "Run Time: 3hr 21min" ));
+
+
+        JScrollPane comingSoonScrollPane = new JScrollPane(comingSoonMoviesPanel);
+        comingSoonPanel.add(comingSoonScrollPane, BorderLayout.CENTER);
+        mainPanel.add(comingSoonPanel, BorderLayout.CENTER);
+
+        add(mainPanel, BorderLayout.CENTER);
+        setLocationRelativeTo(null); // Center the frame on the screen
+        setVisible(true);
+    }
+
+    private JPanel createMoviePanel(String movieTitle, String imageUrl, String movieInfo) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setPreferredSize(new Dimension(270, 350)); // Set preferred size for the panel
+        panel.setBackground(new Color(31, 2, 2)); // Set background color
+
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        // Create a JLabel to hold HTML content
+        JLabel imageLabel = new JLabel("<html><span style='font-family: Arial; font-size: 12pt;'><img src='" + imageUrl + "' width='230' height='280'></span></html>");
+        imageLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Show movie information when the image is clicked
+                MovieDetails movieDetails = new MovieDetails(movieTitle, imageUrl, movieInfo);
+                movieDetails.setVisible(true);
+            }
+        });
+        panel.add(imageLabel, BorderLayout.CENTER);
+
+        JLabel titleLabel = new JLabel(movieTitle);
+        titleLabel.setForeground(Color.WHITE); // Set text color
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center align the text
+        panel.add(titleLabel, BorderLayout.SOUTH);
+
+        return panel;
+    }
+    private JButton createTransparentButton(String text, ActionListener listener) {
+        JButton button = new JButton("<html><u>" + text + "</u></html>");
+        button.setOpaque(false);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.addActionListener(listener);
+        return button;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new Cinemacomingsoon();
+        });
+    }
+}
