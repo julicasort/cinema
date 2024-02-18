@@ -1,81 +1,64 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cinemalog;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+import cinemalog.Cinemareceipt;
 
 public class Cinemaseat extends JFrame {
-    private String selectedBranch;
-    private String selectedTime;
+    private String selectedMovie;
+    private String selectedSchedule;
     private int mouseX, mouseY;
+    private int initialTicketCount;
 
-    public Cinemaseat(String selectedBranch, String selectedTime) {
-        this.selectedBranch = selectedBranch;
-        this.selectedTime = selectedTime;
+    // Add a field to store selected seats
+    private final List<String> selectedSeats = new ArrayList<>();
+
+    public Cinemaseat(String selectedMovie, String selectedSchedule, String[] selectedSeats) {
+        this.selectedMovie = selectedMovie;
+        this.selectedSchedule = selectedSchedule;
+        this.initialTicketCount = initialTicketCount;
 
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setUndecorated(true);
         setLayout(null); // Use null layout for absolute positioning
+        setUndecorated(false); // Set undecorated to false to show window decorations
 
         JPanel redPanel = new JPanel();
-        redPanel.setBackground(Color.RED);
+        redPanel.setBackground(new Color(31, 2, 2));
         redPanel.setBounds(0, 0, 800, 40);
 
         JPanel blackPanel = new JPanel();
-        blackPanel.setBackground(Color.BLACK);
+        blackPanel.setBackground(new Color(31, 2, 2));
         blackPanel.setBounds(0, 40, 800, 560);
 
         JPanel seatsinmid = new JPanel();
         seatsinmid.setLayout(new GridLayout(7, 9, 3, 3)); // Changed to 20 columns
-        seatsinmid.setBackground(Color.BLACK);
-        seatsinmid.setBounds(5, 230, 790, 300);
+        seatsinmid.setBackground(new Color(31, 2, 2));
+        seatsinmid.setBounds(5, 150, 790, 300);
 
-        JLabel screen = new JLabel("SCREEN");
-        screen.setFont(new Font("Helvetica", Font.BOLD, 20));
-        screen.setForeground(Color.BLACK);
-        screen.setBackground(Color.WHITE);
-        screen.setOpaque(true);
-        screen.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        screen.setHorizontalAlignment(JLabel.CENTER);
-        screen.setBounds(10, 42, 780, 40);
         
+
         JLabel Title = new JLabel("SELECT SEATS");
         Title.setFont(new Font("Helvetica", Font.PLAIN, 20));
-        Title.setForeground(Color.BLACK);
+        Title.setForeground(Color.WHITE);
         Title.setBounds(335, 0, 780, 40);
 
-        JButton proceed = new JButton("Proceed");
-        proceed.setFont(new Font("Helvetica", Font.PLAIN, 14));
-        proceed.setForeground(Color.BLACK);
-        proceed.setBackground(new Color(230, 22, 16));
-        proceed.setBorder(BorderFactory.createLineBorder(new Color(230, 22, 16)));
-        proceed.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        proceed.setBounds(670, 550, 100, 30);
-        proceed.addActionListener(new ActionListener() {
+        // "Receipt" button
+        JButton receiptButton = new JButton("Receipt");
+        receiptButton.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        receiptButton.setForeground(Color.WHITE);
+        receiptButton.setBackground(new Color(230, 22, 16));
+        receiptButton.setBorder(BorderFactory.createLineBorder(new Color(230, 22, 16)));
+        receiptButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        receiptButton.setBounds(670, 10, 100, 30);
+        receiptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-
-        JButton back = new JButton("Back");
-        back.setFont(new Font("Helvetica", Font.PLAIN, 14));
-        back.setForeground(Color.BLACK);
-        back.setBackground(new Color(230, 22, 16));
-        back.setBorder(BorderFactory.createLineBorder(new Color(230, 22, 16)));
-        back.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        back.setBounds(30, 550, 100, 30);
-        back.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Cinemapay branch = new Cinemapay();
-                dispose();
+                openReceipt();
             }
         });
 
@@ -86,7 +69,7 @@ public class Cinemaseat extends JFrame {
                     // Add a gap of 3 columns
                     for (int k = 0; k < 1; k++) {
                         JPanel gap = new JPanel();
-                        gap.setBackground(Color.BLACK);
+                        gap.setBackground(new Color(31, 2, 2));
                         seatsinmid.add(gap);
                     }
                 }
@@ -102,12 +85,7 @@ public class Cinemaseat extends JFrame {
                 seat.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        JLabel clickedSeatLabel = (JLabel) e.getSource();
-                        if (clickedSeatLabel.getBackground() == Color.RED) {
-                            clickedSeatLabel.setBackground(Color.WHITE);
-                        } else {
-                            clickedSeatLabel.setBackground(Color.RED);
-                        }
+                        toggleSeatSelection(seat);
                     }
                 });
                 seatsinmid.add(seat);
@@ -132,17 +110,45 @@ public class Cinemaseat extends JFrame {
             }
         });
         add(Title);
-        add(proceed);
-        add(back);
+
         add(seatsinmid);
-        add(screen);
         add(redPanel);
         add(blackPanel);
+        add(receiptButton); // Add the "Receipt" button
 
         setVisible(true); // Moved setVisible(true) to the end
+        
+    }
+
+    // Method to toggle seat selection
+    private void toggleSeatSelection(JLabel seatLabel) {
+        if (seatLabel.getBackground() == Color.RED) {
+            seatLabel.setBackground(Color.WHITE);
+            selectedSeats.remove(seatLabel.getText());
+        } else {
+            seatLabel.setBackground(Color.RED);
+            selectedSeats.add(seatLabel.getText());
+        }
+    }
+
+    // Method to open the receipt window
+    private void openReceipt() {
+    // Check if any seats are selected
+    if (selectedSeats.size() == initialTicketCount) {
+        // Create an instance of Cinemareceipt and pass relevant information
+        new Cinemareceipt(selectedMovie, selectedSchedule, selectedSeats.toArray(new String[0]));
+    } else {
+        // Display an error message if the selected seat count doesn't match the number of tickets
+        JOptionPane.showMessageDialog(this, "Please select " + initialTicketCount + " seats.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Cinemaseat("", "").setVisible(true));
-    }
+    // Assume that the user has selected a movie and schedule elsewhere in the program
+    String selectedMovie = "Aquaman and The Lost Kingdom";
+    String selectedSchedule = "10:00 am";
+
+    // Create an instance of Cinemaseat with selected movie and schedule
+    SwingUtilities.invokeLater(() -> new Cinemaseat(selectedMovie, selectedSchedule, new String[]{}).setVisible(true));
+}
 }
