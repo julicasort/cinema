@@ -1,0 +1,74 @@
+package cinemalog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Cinemareceipt extends JFrame {
+
+    public Cinemareceipt(String selectedMovie, String selectedSchedule, String[] selectedSeats) {
+        setTitle("Cinema Receipt");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        // Panel for the receipt details
+        JPanel receiptPanel = new JPanel(new GridLayout(0, 1));
+        receiptPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Add receipt details
+        JLabel titleLabel = new JLabel("Cinema Receipt");
+        titleLabel.setFont(new Font("Helvetica", Font.BOLD, 20));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        receiptPanel.add(titleLabel);
+
+        JLabel movieLabel = new JLabel("Movie: " + selectedMovie);
+        JLabel scheduleLabel = new JLabel("Schedule: " + selectedSchedule);
+        JLabel seatsLabel = new JLabel("Selected Seats:");
+        StringBuilder seatsText = new StringBuilder();
+        for (String seat : selectedSeats) {
+            seatsText.append(seat).append(", ");
+        }
+        seatsText.delete(seatsText.length() - 2, seatsText.length()); // Remove trailing comma and space
+        JLabel seatsValueLabel = new JLabel(seatsText.toString());
+
+        receiptPanel.add(movieLabel);
+        receiptPanel.add(scheduleLabel);
+        receiptPanel.add(seatsLabel);
+        receiptPanel.add(seatsValueLabel);
+
+        // Panel for payment details
+        JPanel paymentPanel = new JPanel(new GridLayout(0, 2));
+        paymentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel dateLabel = new JLabel("Date: " + getCurrentDate());
+        JLabel totalLabel = new JLabel("Total Amount: $XX.XX");
+
+        paymentPanel.add(dateLabel);
+        paymentPanel.add(totalLabel);
+
+        // Add panels to the frame
+        add(receiptPanel, BorderLayout.CENTER);
+        add(paymentPanel, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+    private String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+    public static void main(String[] args) {
+        // Sample data
+        String selectedMovie = "Aquaman and The Lost Kingdom";
+        String selectedSchedule = "10:00 am";
+        String[] selectedSeats = {"A1", "A2", "A3"};
+
+        // Create a Cinemareceipt instance
+        SwingUtilities.invokeLater(() -> new Cinemareceipt(selectedMovie, selectedSchedule, selectedSeats));
+    }
+}
