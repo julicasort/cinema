@@ -58,15 +58,15 @@ public class cinemafood {
         };
 
         foodFilePaths = new String[]{
-                "C:\\Users\\Cedric Torres\\Downloads\\popcorn.jpg",
-                "C:\\Users\\Cedric Torres\\Downloads\\fries.jpg",
-                "C:\\Users\\Cedric Torres\\Downloads\\sandwich.jpg",
-                "C:\\Users\\Cedric Torres\\Downloads\\doritos.jpg",
-                "C:\\Users\\Cedric Torres\\Downloads\\burger.jpg",
-                "C:\\Users\\Cedric Torres\\Downloads\\montaine.jpg",
-                "C:\\Users\\Cedric Torres\\Downloads\\coke zero.jpg",
-                "C:\\Users\\Cedric Torres\\Downloads\\sprite.jpg",
-                "C:\\Users\\Cedric Torres\\Downloads\\water.jpg"
+                "C:\\Users\\Joy Columna\\Downloads\\Popcorn.jpg",
+                "C:\\Users\\Joy Columna\\Downloads\\fries.jpg",
+                "C:\\Users\\Joy Columna\\Downloads\\sandwich.jpg",
+                "C:\\Users\\Joy Columna\\Downloads\\doritos.jpg",
+                "C:\\Users\\Joy Columna\\Downloads\\burger.jpg",
+                "C:\\Users\\Joy Columna\\Downloads\\mountain dew.jpg",
+                "C:\\Users\\Joy Columna\\Downloads\\coke.jpg",
+                "C:\\Users\\Joy Columna\\Downloads\\coke.jpg",
+                "C:\\Users\\Joy Columna\\Downloads\\bottled water.jpg"
         };
 
         prices = new int[]{80, 45, 85, 160, 65, 50, 50, 50, 35};
@@ -85,13 +85,21 @@ public class cinemafood {
 
         for (int i = 0; i < foodItems.length; i++) {
             foodPanels[i] = new JPanel(new BorderLayout());
+
+            // Create a panel for the food name and price
+            JPanel nameAndPricePanel = new JPanel(new BorderLayout());
+
+            // Add the food image
             foodLabels[i] = new JLabel(foodItems[i], foodImages[i], JLabel.CENTER);
             foodLabels[i].setHorizontalTextPosition(JLabel.CENTER);
             foodLabels[i].setVerticalTextPosition(JLabel.BOTTOM);
-            foodPanels[i].add(foodLabels[i], BorderLayout.CENTER);
+            nameAndPricePanel.add(foodLabels[i], BorderLayout.CENTER);
 
+            // Add the price label at the bottom
             priceLabels[i] = new JLabel("Price: " + prices[i] + ".00", JLabel.CENTER);
-            foodPanels[i].add(priceLabels[i], BorderLayout.SOUTH);
+            nameAndPricePanel.add(priceLabels[i], BorderLayout.SOUTH);
+
+            foodPanels[i].add(nameAndPricePanel, BorderLayout.CENTER);
 
             JPanel quantityPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             minusButtons[i] = new JButton("-");
@@ -180,158 +188,104 @@ public class cinemafood {
         }
     }
 
- 
-    
-
     class MoreInfoButtonListener implements ActionListener {
 
         private int index;
- 
+
         public MoreInfoButtonListener(int index) {
-
             this.index = index;
-
         }
- 
+
         @Override
-
         public void actionPerformed(ActionEvent e) {
-
-
             String message = "You can choose from these variants at any of our counters on the day of the screening:\n" +
-
                     "Flavors:\n" +
-
                     "Plain\n" +
-
                     "BBQ\n" +
-
                     "Sour Cream";
 
             JOptionPane.showMessageDialog(null, message, "More Info: " + foodItems[index], JOptionPane.INFORMATION_MESSAGE);
-
         }
-
     }
- 
-    private void updateBookingSummary(String foodItem, int quantity, int price) {
 
+    private void updateBookingSummary(String foodItem, int quantity, int price) {
         boolean exists = false;
 
         for (Order order : orders) {
-
             if (order.getFoodItem().equals(foodItem)) {
-
                 order.setQuantity(order.getQuantity() + quantity);
-
                 exists = true;
-
                 break;
-
             }
-
         }
 
         if (!exists && quantity > 0) {
-
             orders.add(new Order(foodItem, quantity, price));
-
         }
 
         displayBookingSummary();
-
     }
- 
-    private void displayBookingSummary() {
 
-        StringBuilder summary = new StringBuilder("<html><b>Booking Summary</b><br>");
+    private void displayBookingSummary() {
+        StringBuilder summary = new StringBuilder("Booking Summary\n");
 
         totalCost = 0;
 
         for (Order order : orders) {
-
-            summary.append(order.getFoodItem()).append(": ").append(order.getQuantity()).append(" x ").append(order.getPrice()).append(" pesos = ").append(order.getPrice() * order.getQuantity()).append(" pesos<br>");
+            summary.append(order.getFoodItem()).append(": ").append(order.getQuantity()).append(" x ").append(order.getPrice()).append(" pesos = ").append(order.getPrice() * order.getQuantity()).append(" pesos\n");
 
             totalCost += order.getPrice() * order.getQuantity();
-
         }
 
-        summary.append("<b>Total Cost:</b> ").append(totalCost).append(" pesos</html>");
-
-        bookingSummary.setContentType("text/html");
+        summary.append("Total Cost: ").append(totalCost).append(" pesos");
 
         bookingSummary.setText(summary.toString());
-
     }
- 
+
     private void clearBookingSummary() {
-
         orders.clear();
-
         displayBookingSummary();
-
     }
- 
+
     public static void main(String[] args) {
-
         SwingUtilities.invokeLater(cinemafood::new);
-
     }
-
 }
- 
+
 class Order {
 
     private String foodItem;
-
     private int quantity;
-
     private int price;
- 
+
     public Order(String foodItem, int quantity, int price) {
-
         this.foodItem = foodItem;
-
         this.quantity = quantity;
-
         this.price = price;
-
     }
- 
+
     public String getFoodItem() {
-
         return foodItem;
-
     }
- 
+
     public void setFoodItem(String foodItem) {
-
         this.foodItem = foodItem;
-
     }
- 
+
     public int getQuantity() {
-
         return quantity;
-
     }
- 
+
     public void setQuantity(int quantity) {
-
         this.quantity = quantity;
-
     }
- 
+
     public int getPrice() {
-
         return price;
-
     }
- 
+
     public void setPrice(int price) {
-
         this.price = price;
-
     }
-
 }
+
