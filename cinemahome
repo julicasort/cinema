@@ -1,5 +1,5 @@
 package cinemalog;
-
+ 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -10,64 +10,53 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 public class Cinemahome extends JFrame {
-    
-    
-
     public Cinemahome() {
         setTitle("CINEMA TECH");
         setSize(815, 830); // Custom size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(31, 2, 2));
-
+        
         JLabel cinemaLabel = new JLabel("CINEMA TECH");
-        cinemaLabel.setForeground(Color.WHITE); // Set text color to blue
-        cinemaLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                // When clicked, dispose the current frame and create a new instance of Cinemahome
-                dispose();
-                new Cinemahome().setVisible(true);
-            }
-        });
+        cinemaLabel.setForeground(Color.WHITE);
         headerPanel.add(cinemaLabel, BorderLayout.CENTER);
+        cinemaLabel.addMouseListener(new MouseAdapter() {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // When clicked, dispose the current frame and create a new instance of Cinemahome
+        dispose();
+        new Cinemahome().setVisible(true);
+    }
+});
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
-        buttonPanel.add(createTransparentButton("coming soon", e -> {
+        buttonPanel.add(createTransparentButton("COMING SOON", e -> {
             new Cinemacomingsoon();
+            dispose();
         }));
-
-        buttonPanel.add(createTransparentButton("Book Tickets", e -> {
+        buttonPanel.add(createTransparentButton("BOOK TICKETS", e -> {
             new Cinemapay();
+            dispose();
         }));
-
         headerPanel.add(buttonPanel, BorderLayout.EAST);
-
         add(headerPanel, BorderLayout.NORTH);
-
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(new Color(31, 2, 2));
-
         JPanel nowShowingPanel = new JPanel(new BorderLayout()); // Create a JPanel to hold the "NOW SHOWING" label
         nowShowingPanel.setBackground(new Color(31, 2, 2)); // Set background color
         nowShowingPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Align the panel horizontally at the center
-
+ 
         JLabel nowShowingLabel = new JLabel("NOW SHOWING"); // Create the label
         nowShowingLabel.setForeground(Color.WHITE); // Set text color to white
         nowShowingLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Set font and size
         nowShowingLabel.setHorizontalAlignment(SwingConstants.LEFT); // Align text to the left
-
         nowShowingPanel.add(nowShowingLabel, BorderLayout.NORTH);
-        
- 
-        JPanel nowShowingMoviesPanel = new JPanel(new GridLayout(0, 3)); // GridLayout with 5 columns
+        JPanel nowShowingMoviesPanel = new JPanel(new GridLayout(2, 5));
         // Add image URLs and descriptions for each movie
-        nowShowingMoviesPanel.add(createMoviePanel("Aquaman and The Lost Kingdom", "https://m.media-amazon.com/images/M/MV5BODgwMzA0NGUtNGQ2MC00MzA5LTlhNWUtMmM5YmJjMzYwMzc1XkEyXkFqcGdeQXVyMTY3ODkyNDkz._V1_.jpg", "AQUAMAN AND THE LOST KINGDOM   (PG)\nAfter failing to defeat Aquaman the first time, Black Manta wields the power of the mythic Black Trident to unleash an ancient and malevolent force. Hoping to end his reign of terror, Aquaman forges an unlikely alliance with his brother, Orm, the former king of Atlantis. Setting aside their differences, they join forces to protect their kingdom and save the world from irreversible destruction.\nGenre: Action/Adventure/Fantasy\nDirector: James Wan\nCast: Jason Momoa, Amber Heard, Nicole Kidman\nRun Time:  2hr 4min"));
+        nowShowingMoviesPanel.add(createMoviePanel("Aquaman and The Lost Kingdom", "https://m.media-amazon.com/images/M/MV5BODgwMzA0NGUtNGQ2MC00MzA5LTlhNWUtMmM5YmJjMzYwMzc1XkEyXkFqcGdeQXVyMTY3ODkyNDkz._V1_.jpg", "AQUAMAN AND THE LOST KINGDOM  (PG)\nAfter failing to defeat Aquaman the first time, Black Manta wields the power of the mythic Black Trident to unleash an ancient and malevolent force. Hoping to end his reign of terror, Aquaman forges an unlikely alliance with his brother, Orm, the former king of Atlantis. Setting aside their differences, they join forces to protect their kingdom and save the world from irreversible destruction.\nGenre: Action/Adventure/Fantasy\nDirector: James Wan\nCast: Jason Momoa, Amber Heard, Nicole Kidman\nRun Time:  2hr 4min"));
         nowShowingMoviesPanel.add(createMoviePanel("Wonka", "https://m.media-amazon.com/images/M/MV5BNDM4NTk0NjktZDJhMi00MmFmLTliMzEtN2RkZDY2OTNiMDgzXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_FMjpg_UX1000_.jpg", "WONKA  (G)\nArmed with nothing but a hatful of dreams, young chocolatier Willy Wonka manages to change the world, one delectable bite at a time.\nGenre: Adventure/Comedy/Family\nDirector: Paul King\nCast: Timothee Chalamet, Hugh Grant, Rowan Atkinson\nRun Time: 1hr 56min"));
         nowShowingMoviesPanel.add(createMoviePanel("The Beekeeper", "https://relasi.news/wp-content/uploads/2024/01/images-15-02.jpeg", "THE BEEKEEPER  (R-13)\nOne man's brutal campaign for vengeance takes on national stakes after it's revealed he's a former operative of a powerful and clandestine organization known as Beekeepers.\nGenre: Action/Thriller\nDirector: David Ayer\nCast: Jason Statham, Josh Hutcherson, Amber Sienna\nRun Time: 1hr 45min"));
         nowShowingMoviesPanel.add(createMoviePanel("Rewind", "https://m.media-amazon.com/images/M/MV5BOTVlNWEyNmMtYmI0ZC00NWJlLTgyZGItMmE5MWYxNTAyZDRlXkEyXkFqcGdeQXVyNTI5NjIyMw@@._V1_FMjpg_UX1000_.jpg", "REWIND  (PG)\nMary loves John her entire life. After years of marriage, John's priorities change, straining their relationship and leading to a tragic accident that takes Mary's life. An extraordinary proposition allows John to rewind time.\nGenre: Drama/Romance\nDirector: Mae Czarina Cruz-Alviar\nCast: Dingdong Dantes, Marian Rivers, Coney Reyes\nRun Time: 1hr 52min"));
@@ -77,31 +66,25 @@ public class Cinemahome extends JFrame {
         nowShowingMoviesPanel.add(createMoviePanel("Migration", "https://m.media-amazon.com/images/M/MV5BYTIxZDM5YWItM2Y1My00ODg5LTkzNjAtMWFlZTNlODg0MzEyXkEyXkFqcGdeQXVyMTA5ODEyNTc5._V1_FMjpg_UX1000_.jpg", "MIGRATION  (G)\nA family of ducks decides to leave the safety of a New England Pond for an adventurous trip to Jamaica. However, their well-laid plans quickly go awry when they get lost and wind up in New York City. The experience soon inspires them to expand their horizons, open themselves up to new friends, and accomplish more than they ever thought possible.\nGenre: Animation/Action/Adventure\nDirector: Benjamin Renner\nCast: Danny DeVito, Elizabeth Banks, Kumail Nanjiani\nRun Time: 1hr 31min"));
         nowShowingMoviesPanel.add(createMoviePanel("Spider-Man: No Way Home", "https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg", "SPIDER-MAN: NO WAY HOME  (PG)\nWith Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man.\nGenre: Action/Adventure/Fantasy\nDirector: Jon Watts\nCast: Tom Holland, Zendaya, Benedict Cumberbatch\nRun Time: 2hr 28min"));
         nowShowingMoviesPanel.add(createMoviePanel("Jujutsu Kaisen 0", "https://m.media-amazon.com/images/M/MV5BODM0NmVjMzUtOTJhNi00N2ZhLWFkYmMtYmZmNjRiY2M1YWY4XkEyXkFqcGdeQXVyOTgxOTA5MDg@._V1_.jpg", "JUJUTSU KAISEN 0  (PG)\nThe prequel to Jujutsu Kaisen (2020), where a high schooler gains control of an extremely powerful cursed spirit and gets enrolled in the Tokyo Prefectural Jujutsu High School by Jujutsu Sorcerers.\nGenre: Animation/Action/Fantasy\nDirector: Seong-Hu Park\nCast: Yuuta Okkutsu, Satoru Gojo, Getou Suguru\nRun Time: 1hr 45min"));
-        nowShowingMoviesPanel.add(createMoviePanel("The Matrix Resurrections", "https://m.media-amazon.com/images/M/MV5BMjEyNTY0ZDgtZTBmYS00MTFlLTkxN2UtYmU3MzJhNjYxYjI2XkEyXkFqcGdeQXVyMTI4NjA0NjA5._V1_FMjpg_UX1000_.jpg", "THE MATRIX RESURRECTIONS (R)\nReturn to a world of two realities: one, everyday life; the other, what lies behind it. To find out if his reality is a physical or mental construct, to truly know himself, Mr. Anderson will have to choose to follow the white rabbit once more.\nGenre: Action/Sci-Fi\nDirector: Lana Wachowski\nCast: Keanu Reeves, Carrie-Anne Moss, Yahya Abdul-Mateen II\nRun Time: 2hr 28min"));
-        nowShowingMoviesPanel.add(createMoviePanel("Incantation", "https://example.com/incantation.jpg", "INCANTATION (PG-13)\nIn a world where magic is a curse, a young mage named Ava discovers her abilities and embarks on a perilous journey to unlock the secrets of her past and save her kingdom from dark forces.\nGenre: Fantasy/Adventure\nDirector: Emily Ward\nCast: Sarah Johnson, Michael Smith, Emily Thompson\nRun Time: 2hr 10min"));
-
+        nowShowingMoviesPanel.add(createMoviePanel("The Matrix Resurrections", "https://m.media-amazon.com/images/M/MV5BMGJkNDJlZWUtOGM1Ny00YjNkLThiM2QtY2ZjMzQxMTIxNWNmXkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_FMjpg_UX1000_.jpg", "THE MATRIX RESURRECTIONS (R)\nReturn to a world of two realities: one, everyday life; the other, what lies behind it. To find out if his reality is a physical or mental construct, to truly know himself, Mr. Anderson will have to choose to follow the white rabbit once more.\nGenre: Action/Sci-Fi\nDirector: Lana Wachowski\nCast: Keanu Reeves, Carrie-Anne Moss, Yahya Abdul-Mateen II\nRun Time: 2hr 28min"));
+        nowShowingMoviesPanel.add(createMoviePanel("Incantation", "https://m.media-amazon.com/images/M/MV5BYjUxZGI1ODQtMDljMS00ZTUwLWI0NTMtYjc2YmUyZTM3YTdhXkEyXkFqcGdeQXVyNTM2NTY4NzU@._V1_FMjpg_UX1000_.jpg", "INCANTATION  (PG-13)\nIn a world where magic is a curse, a young mage named Ava discovers her abilities and embarks on a perilous journey to unlock the secrets of her past and save her kingdom from dark forces.\nGenre: Fantasy/Adventure\nDirector: Emily Ward\nCast: Sarah Johnson, Michael Smith, Emily Thompson\nRun Time: 2hr 10min"));
  
+
         JScrollPane nowShowingScrollPane = new JScrollPane(nowShowingMoviesPanel);
         nowShowingPanel.add(nowShowingScrollPane, BorderLayout.CENTER);
         mainPanel.add(nowShowingPanel, BorderLayout.CENTER);
-
-
-
+ 
 // Add main panel to the frame
         add(mainPanel, BorderLayout.CENTER);
-        
+         setVisible(true);
     }
-    
- 
     private JPanel createMoviePanel(String movieTitle, String imageUrl, String movieInfo) {
     JPanel panel = new JPanel(new BorderLayout());
     panel.setPreferredSize(new Dimension(270, 350)); // Set preferred size for the panel
     panel.setBackground(new Color(31, 2, 2)); // Set background color
-    
     panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
- 
     // Create a JLabel to hold HTML content
-    JLabel imageLabel = new JLabel("<html><span style='font-family: Arial; font-size: 12pt;'><img src='" + imageUrl + "' width='230' height='280'></span></html>");
+    JLabel imageLabel = new JLabel("<html><span style='font-family: Arial; font-size: 12pt;'><img src='" + imageUrl + "' width='250' height='320'></span></html>");
     imageLabel.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -111,16 +94,8 @@ public class Cinemahome extends JFrame {
         }
     });
     panel.add(imageLabel, BorderLayout.CENTER);
-    
-    JLabel titleLabel = new JLabel(movieTitle);
-    titleLabel.setForeground(Color.WHITE); // Set text color
-    titleLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center align the text
-    panel.add(titleLabel, BorderLayout.SOUTH);
-    
- 
     return panel;
 }
- 
     private JButton createTransparentButton(String text, ActionListener listener) {
         JButton button = new JButton("<html><u>" + text + "</u></html>");
         button.setOpaque(false);
@@ -131,24 +106,22 @@ public class Cinemahome extends JFrame {
         button.addActionListener(listener);
         return button;
     }
- 
     public static void main(String[] args) {
         Cinemahome frame = new Cinemahome();
         frame.setLocationRelativeTo(null); // Set the frame to appear in the center of the screen
         frame.setVisible(true);
-
+ 
     }
 }
- 
 class MovieDetails extends JFrame {
-
+ 
     public MovieDetails(String movieTitle, String imageUrl, String movieInfo) {
         setTitle(movieTitle);
         setSize(550, 650); // Custom size
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+ 
         JPanel panel = new JPanel(new BorderLayout());
-
+ 
         JLabel posterLabel = new JLabel();
         try {
             URL url = new URL(imageUrl);
@@ -162,28 +135,28 @@ class MovieDetails extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+ 
         JTextArea infoArea = new JTextArea(movieInfo);
         infoArea.setEditable(false);
         infoArea.setLineWrap(true); // Enable text wrapping
         infoArea.setWrapStyleWord(true); // Wrap at word boundaries
         JScrollPane scrollPane = new JScrollPane(infoArea);
         scrollPane.setPreferredSize(new Dimension(300, 200)); // Set preferred size
-
+ 
         // Add Buy Now button
         JButton buyNowButton = new JButton("Buy Now");
         buyNowButton.addActionListener(e -> {
             new Cinemapay();
         });
-
+ 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(buyNowButton);
-
+ 
         panel.add(posterLabel, BorderLayout.WEST);
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
         add(panel);
-
+ 
         // Center the frame on the screen
         setLocationRelativeTo(null);
     }
