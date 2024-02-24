@@ -9,12 +9,14 @@ import java.awt.event.MouseEvent;
 public class Cinemacomingsoon extends JFrame {
  
     public Cinemacomingsoon() {
+        setUndecorated(true); // Removes the window decorations
         setTitle("COMING SOON");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
  
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(31, 2, 2));
+        
  
         JLabel cinemaLabel = new JLabel("CINEMA TECH");
         cinemaLabel.setForeground(Color.WHITE);
@@ -24,15 +26,9 @@ public class Cinemacomingsoon extends JFrame {
         buttonPanel.setOpaque(false);
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(createTransparentButton("HOME", e -> {
-            new Cinemahome().setVisible(true);
-            dispose();
-        }));
-        buttonPanel.add(createTransparentButton("NOW SHOWING", e -> {
-            new Cinemanowshowing().setVisible(true);
-            dispose();
-        }));
-        buttonPanel.add(createTransparentButton("BOOK TICKETS", e -> {
-            new Cinemapay().setVisible(true);
+            Cinemahome cinemahome = new Cinemahome();
+            cinemahome.setLocationRelativeTo(null); // Set the frame to appear in the center of the screen
+            cinemahome.setVisible(true);
             dispose();
         }));
  
@@ -50,7 +46,7 @@ public class Cinemacomingsoon extends JFrame {
         comingSoonLabel.setHorizontalAlignment(SwingConstants.LEFT);
         comingSoonPanel.add(comingSoonLabel, BorderLayout.NORTH);
  
-        JPanel comingSoonMoviesPanel = new JPanel(new GridLayout(2,5)); 
+        JPanel comingSoonMoviesPanel = new JPanel(new GridLayout(0,4)); 
         comingSoonMoviesPanel.setBackground(new Color(31, 2, 2));
  
         comingSoonMoviesPanel.add(createMoviePanel("The Shawshank Redemption", "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg", "THE SHAWSHANK REDEMPTION  (PG)\nTwo imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.\nGenre: Drama\nDirector: Frank Darabont\nStars: Tim Robbins, Morgan Freeman, Bob Gunton\nRun Time: 2hr 22min"));
@@ -64,12 +60,15 @@ public class Cinemacomingsoon extends JFrame {
         comingSoonMoviesPanel.add(createMoviePanel("INSIDE OUT 2", "https://m.media-amazon.com/images/M/MV5BYjdjNjUzMGEtNDExMC00NDk4LWExNjctNzE3ZTY1YmFiYWM5XkEyXkFqcGdeQXVyMTM1NjM2ODg1._V1_FMjpg_UX1000_.jpg", "INSIDE OUT 2  (PG)\nFollow Riley, in her teenage years, encountering new emotions.\nGenre: Comedy,Animation,Adventure,\nCast: Amy Poehler, Phyllis Smith, Lewis Black\nRun Time: 1hr 35min\nOpening Date: Friday 14, June 2024"));
         JScrollPane comingSoonScrollPane = new JScrollPane(comingSoonMoviesPanel);
         comingSoonPanel.add(comingSoonScrollPane, BorderLayout.CENTER);
+        comingSoonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         mainPanel.add(comingSoonPanel, BorderLayout.CENTER);
  
         add(mainPanel, BorderLayout.CENTER);
-        pack(); // Packs the components to make them fit nicely
-        setLocationRelativeTo(null); // Centers the frame on the screen
-        setVisible(true);
+        add(mainPanel, BorderLayout.CENTER);
+         setVisible(true); // Centers the frame on the screen
+        
+        
+        setSize(1085, 830);
     }
  
     private JPanel createMoviePanel(String movieTitle, String imageUrl, String movieInfo) {
@@ -104,7 +103,9 @@ public class Cinemacomingsoon extends JFrame {
  
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Cinemacomingsoon::new);
+        Cinemacomingsoon frame = new Cinemacomingsoon();
+        frame.setLocationRelativeTo(null); // Set the frame to appear in the center of the screen
+        frame.setVisible(true);
     }
 }
-    }
-}
+    
