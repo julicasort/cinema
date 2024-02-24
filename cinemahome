@@ -12,35 +12,35 @@ import javax.imageio.ImageIO;
 public class Cinemahome extends JFrame {
     public Cinemahome() {
         setTitle("CINEMA TECH");
-        setSize(815, 830); // Custom size
+        setUndecorated(true);
+        setSize(1085, 830); // Custom size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+        // Header Panel
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(31, 2, 2));
-        
+
         JLabel cinemaLabel = new JLabel("CINEMA TECH");
         cinemaLabel.setForeground(Color.WHITE);
         headerPanel.add(cinemaLabel, BorderLayout.CENTER);
-        cinemaLabel.addMouseListener(new MouseAdapter() {
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // When clicked, dispose the current frame and create a new instance of Cinemahome
-        dispose();
-        new Cinemahome().setVisible(true);
-    }
-});
-
+        
+        // Button Panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(createTransparentButton("COMING SOON", e -> {
-            new Cinemacomingsoon();
+            Cinemacomingsoon cinemacomingsoon = new Cinemacomingsoon();
+            cinemacomingsoon.setLocationRelativeTo(null); // Set the frame to appear in the center of the screen
+            cinemacomingsoon.setVisible(true);
             dispose();
         }));
-        buttonPanel.add(createTransparentButton("BOOK TICKETS", e -> {
-            new Cinemapay();
+        
+        buttonPanel.add(createTransparentButton("EXIT", e -> {
             dispose();
         }));
+        
+        
         headerPanel.add(buttonPanel, BorderLayout.EAST);
         add(headerPanel, BorderLayout.NORTH);
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -54,7 +54,8 @@ public class Cinemahome extends JFrame {
         nowShowingLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Set font and size
         nowShowingLabel.setHorizontalAlignment(SwingConstants.LEFT); // Align text to the left
         nowShowingPanel.add(nowShowingLabel, BorderLayout.NORTH);
-        JPanel nowShowingMoviesPanel = new JPanel(new GridLayout(2, 5));
+        JPanel nowShowingMoviesPanel = new JPanel(new GridLayout(0, 4));
+        
         // Add image URLs and descriptions for each movie
         nowShowingMoviesPanel.add(createMoviePanel("Aquaman and The Lost Kingdom", "https://m.media-amazon.com/images/M/MV5BODgwMzA0NGUtNGQ2MC00MzA5LTlhNWUtMmM5YmJjMzYwMzc1XkEyXkFqcGdeQXVyMTY3ODkyNDkz._V1_.jpg", "AQUAMAN AND THE LOST KINGDOM  (PG)\nAfter failing to defeat Aquaman the first time, Black Manta wields the power of the mythic Black Trident to unleash an ancient and malevolent force. Hoping to end his reign of terror, Aquaman forges an unlikely alliance with his brother, Orm, the former king of Atlantis. Setting aside their differences, they join forces to protect their kingdom and save the world from irreversible destruction.\nGenre: Action/Adventure/Fantasy\nDirector: James Wan\nCast: Jason Momoa, Amber Heard, Nicole Kidman\nRun Time:  2hr 4min"));
         nowShowingMoviesPanel.add(createMoviePanel("Wonka", "https://m.media-amazon.com/images/M/MV5BNDM4NTk0NjktZDJhMi00MmFmLTliMzEtN2RkZDY2OTNiMDgzXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_FMjpg_UX1000_.jpg", "WONKA  (G)\nArmed with nothing but a hatful of dreams, young chocolatier Willy Wonka manages to change the world, one delectable bite at a time.\nGenre: Adventure/Comedy/Family\nDirector: Paul King\nCast: Timothee Chalamet, Hugh Grant, Rowan Atkinson\nRun Time: 1hr 56min"));
@@ -72,6 +73,7 @@ public class Cinemahome extends JFrame {
 
         JScrollPane nowShowingScrollPane = new JScrollPane(nowShowingMoviesPanel);
         nowShowingPanel.add(nowShowingScrollPane, BorderLayout.CENTER);
+        nowShowingScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         mainPanel.add(nowShowingPanel, BorderLayout.CENTER);
  
 // Add main panel to the frame
@@ -114,14 +116,15 @@ public class Cinemahome extends JFrame {
     }
 }
 class MovieDetails extends JFrame {
- 
+
     public MovieDetails(String movieTitle, String imageUrl, String movieInfo) {
         setTitle(movieTitle);
-        setSize(550, 650); // Custom size
+        setUndecorated(true);
+        setSize(1085, 830); // Custom size
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
- 
+
         JPanel panel = new JPanel(new BorderLayout());
- 
+
         JLabel posterLabel = new JLabel();
         try {
             URL url = new URL(imageUrl);
@@ -131,33 +134,45 @@ class MovieDetails extends JFrame {
                 posterLabel.setIcon(icon);
             } else {
                 System.err.println("Failed to load movie poster: " + movieTitle);
+
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
- 
+
         JTextArea infoArea = new JTextArea(movieInfo);
         infoArea.setEditable(false);
         infoArea.setLineWrap(true); // Enable text wrapping
         infoArea.setWrapStyleWord(true); // Wrap at word boundaries
         JScrollPane scrollPane = new JScrollPane(infoArea);
         scrollPane.setPreferredSize(new Dimension(300, 200)); // Set preferred size
- 
+
         // Add Buy Now button
         JButton buyNowButton = new JButton("Buy Now");
         buyNowButton.addActionListener(e -> {
             new Cinemapay();
         });
- 
+
+        // Add Back button
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            dispose(); // Dispose the MovieDetails frame
+        });
+
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(buyNowButton);
- 
+        buttonPanel.setLayout(new BorderLayout()); // Set BorderLayout for buttonPanel
+        buttonPanel.add(backButton, BorderLayout.WEST); // Place the Back button on the left side
+        buttonPanel.add(buyNowButton, BorderLayout.EAST); // Place the Buy Now button on the right side
+
         panel.add(posterLabel, BorderLayout.WEST);
         panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
+        panel.add(buttonPanel, BorderLayout.SOUTH); // Add buttonPanel to the SOUTH of the frame
         add(panel);
- 
+
         // Center the frame on the screen
         setLocationRelativeTo(null);
     }
 }
+
+
