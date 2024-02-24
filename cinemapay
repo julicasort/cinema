@@ -21,6 +21,7 @@ public class Cinemapay extends JFrame implements ActionListener {
     private final JSpinner ticketSpinner;
     private final JButton chooseSeatsButton;
     private JButton orderFoodButton;
+    private JButton backButton;
  
     private final String[] movies = {"Aquman and The Lost Kingdom", "Wonka", "The Beekeeper", "Rweind", "Thanksgiving", "The Boy and The Heron", "No Way Up", "Migration", "Spiderman-No Way Home", "Jujutsu Kaisen 0"};
     private final String[] schedules = {"10:00 am", "11:30 am", "01:00 pm", "2:30 pm", "4:00 pm", "5:30 pm", "7:00 pm", "8:30 pm"};
@@ -35,19 +36,22 @@ public class Cinemapay extends JFrame implements ActionListener {
     };
  
     public Cinemapay() {
+        setUndecorated(true); // Removes the window decorations
         setTitle("CINEMA TECH");
-        setSize(400, 500);
+        setSize(370, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        
+        setBackground(new Color(31, 2, 2));
  
         // Movie Label
         movieLabel = new JLabel("Select a movie:");
-        movieLabel.setBounds(20, 20, 200, 30);
+        movieLabel.setBounds(20, 30, 200, 30);
         add(movieLabel);
  
         // Movie ComboBox
         movieComboBox = new JComboBox<>(movies);
-        movieComboBox.setBounds(130, 20, 200, 30);
+        movieComboBox.setBounds(130, 30, 200, 30);
         movieComboBox.addActionListener(this);
         add(movieComboBox);
  
@@ -90,7 +94,7 @@ public class Cinemapay extends JFrame implements ActionListener {
  
         // Proceed to Payment Button
         proceedToPaymentButton = new JButton("Proceed to Payment");
-        proceedToPaymentButton.setBounds(200, 260, 150, 30);
+        proceedToPaymentButton.setBounds(200, 550, 150, 30);
         proceedToPaymentButton.addActionListener(this);
         add(proceedToPaymentButton);
  
@@ -98,7 +102,7 @@ public class Cinemapay extends JFrame implements ActionListener {
         paymentSummaryTextArea = new JTextArea();
         paymentSummaryTextArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(paymentSummaryTextArea);
-        scrollPane.setBounds(20, 300, 330, 120);
+        scrollPane.setBounds(20, 330, 330, 200);
         add(scrollPane);
  
         // Choose Seats Button
@@ -111,14 +115,18 @@ public class Cinemapay extends JFrame implements ActionListener {
         setLayout(null);
         setVisible(true);
         
+        
+        
         // Order Food Button
         orderFoodButton = new JButton("Order Food");
-        orderFoodButton.setBounds(20, 260, 150, 30); // Adjusted Y-coordinate
+        orderFoodButton.setBounds(110, 260, 150, 30); // Adjusted Y-coordinate
         orderFoodButton.addActionListener(this);
-        add(orderFoodButton);
- 
+        add(orderFoodButton);  
         
-
+        backButton = new JButton("Back");
+        backButton.setBounds(20, 550, 150, 30);
+        backButton.addActionListener(this);
+        add(backButton);
 
     }
  
@@ -225,20 +233,22 @@ public class Cinemapay extends JFrame implements ActionListener {
  
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == movieComboBox) {
-            updateInfoLabel();
-        } else if (e.getSource() == scheduleButton) {
-            generatePaymentSummary("Schedule");
-            chooseSeatsButton.setEnabled(true); // Enable "Choose Seats" button after schedule selection
-        } else if (e.getSource() == proceedToPaymentButton) {
-            proceedToPayment();
-        } else if (e.getSource() == chooseSeatsButton) {
-            chooseSeats();
-        }
-        else if (e.getSource() == orderFoodButton) {
-            orderFood();
-        }
+    if (e.getSource() == movieComboBox) {
+        updateInfoLabel();
+    } else if (e.getSource() == scheduleButton) {
+        generatePaymentSummary("Schedule");
+        chooseSeatsButton.setEnabled(true);
+    } else if (e.getSource() == proceedToPaymentButton) {
+        proceedToPayment();
+    } else if (e.getSource() == chooseSeatsButton) {
+        chooseSeats();
+    } else if (e.getSource() == orderFoodButton) {
+        orderFood();
+    } else if (e.getSource() == backButton) {
+        // Close the Cinemapay frame
+        dispose();
     }
+}
  
     private void updateInfoLabel() {
         String selectedMovie = (String) movieComboBox.getSelectedItem();
@@ -335,15 +345,16 @@ public class Cinemapay extends JFrame implements ActionListener {
     }
  
         private void proceedToPayment() {
-            String selectedSeats = paymentSummaryTextArea.getText().contains("Selected Seats:") ? paymentSummaryTextArea.getText().split("Selected Seats:")[1].trim() : "";
-            if (selectedSeats.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please choose seats first.", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                String paymentSummary = paymentSummaryTextArea.getText();
-                JOptionPane.showMessageDialog(this, "Proceeding to payment...\n" + paymentSummary, "Payment Summary", JOptionPane.INFORMATION_MESSAGE);
-            }
-            
+        String selectedSeats = paymentSummaryTextArea.getText().contains("Selected Seats:") ? paymentSummaryTextArea.getText().split("Selected Seats:")[1].trim() : "";
+        if (selectedSeats.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please choose seats first.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String paymentSummary = paymentSummaryTextArea.getText();
+            Cinemapayment cinemaPayment = new Cinemapayment(paymentSummary);
+            cinemaPayment.setVisible(true);
         }
+    
+}
 
         private void orderFood() {
         // Open the Cinemafood frame
