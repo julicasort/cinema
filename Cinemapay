@@ -1,0 +1,767 @@
+package cinemalogg;
+ 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.util.Calendar;
+import static javax.swing.JFrame.EXIT_ON_CLOSE;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+ 
+public class Cinemapay extends JFrame implements ActionListener {
+ 
+    private final JLabel movieLabel;
+    private final JLabel infoLabel;
+    private final JComboBox<String> movieComboBox;
+    private final JComboBox<String> scheduleComboBox;
+    private final JComboBox<String> watchInComboBox;
+    private final JComboBox<String> cinemaComboBox;
+    private final JComboBox<String> dateComboBox;
+    private final JButton scheduleButton;
+    private final JButton proceedToPaymentButton;
+    private final JTextArea paymentSummaryTextArea;
+    private final JSpinner ticketSpinner;
+    private final JButton chooseSeatsButton;
+    private JButton orderFoodButton;
+    private JButton backButton;
+    private JButton modeOfPaymentButton;
+    private JFrame modeOfPaymentFrame;
+ 
+    private final String[] movies = {"Aquaman and The Lost Kingdom", "Wonka", "The Beekeeper", "Rewind", "Thanksgiving", "The Boy and The Heron", "No Way Up", "Migration", "Spiderman-No Way Home", "Jujutsu Kaisen 0"};
+    private final String[] schedules = {"10:00 am", "11:30 am", "01:00 pm", "2:30 pm", "4:00 pm", "5:30 pm", "7:00 pm", "8:30 pm"};
+    private final String[] watchIns = {"2D", "3D"};
+    private final String[] cinemas = {"Cinema 4", "Cinema 5", "Cinema 6"};
+ 
+    private final double[][] moviePrices = {
+            {330.00, 20.00}, // Aquaman and The Lost Kingdom, Wonka, The Beekeeper
+            {280.00, 15.00}, // Rewind, The Boy and The Heron, Migration
+            {350.00, 25.00}, // Thanksgiving, No Way Up
+            {380.00, 30.00} // Spiderman-No Way Home, Jujutsu Kaisen 0
+    };
+ 
+    public Cinemapay() {
+        setUndecorated(true); // Removes the window decorations
+        setTitle("CINEMA TECH");
+        setSize(370, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        
+        setBackground(new Color(31, 2, 2));
+ 
+        // Movie Label
+        movieLabel = new JLabel("Select a movie:");
+        movieLabel.setBounds(20, 30, 200, 30);
+        add(movieLabel);
+ 
+        // Movie ComboBox
+        movieComboBox = new JComboBox<>(movies);
+        movieComboBox.setBounds(130, 30, 200, 30);
+        movieComboBox.addActionListener(this);
+        add(movieComboBox);
+ 
+        // Info Label
+        infoLabel = new JLabel(" ");
+        infoLabel.setBounds(20, 60, 360, 30);
+        add(infoLabel);
+ 
+        // Schedule ComboBox
+        scheduleComboBox = new JComboBox<>(schedules);
+        scheduleComboBox.setBounds(20, 100, 150, 30);
+        add(scheduleComboBox);
+ 
+        // Watch In ComboBox
+        watchInComboBox = new JComboBox<>(watchIns);
+        watchInComboBox.setBounds(200, 100, 150, 30);
+        add(watchInComboBox);
+ 
+        // Cinema ComboBox
+        cinemaComboBox = new JComboBox<>(cinemas);
+        cinemaComboBox.setBounds(20, 140, 150, 30);
+        add(cinemaComboBox);
+ 
+        // Date ComboBox
+        dateComboBox = new JComboBox<>(getDates());
+        dateComboBox.setBounds(200, 140, 150, 30);
+        add(dateComboBox);
+ 
+        // Ticket Spinner
+        SpinnerNumberModel spinnerModel = new SpinnerNumberModel(1, 1, 10, 1); // Initial, Min, Max, Step
+        ticketSpinner = new JSpinner(spinnerModel);
+        ticketSpinner.setBounds(20, 180, 150, 30);
+        add(ticketSpinner);
+ 
+        // Schedule Button
+        scheduleButton = new JButton("Schedule");
+        scheduleButton.setBounds(20, 220, 150, 30);
+        scheduleButton.addActionListener(this);
+        add(scheduleButton);
+ 
+        // Proceed to Payment Button
+        proceedToPaymentButton = new JButton("Proceed to Payment");
+        proceedToPaymentButton.setBounds(200, 550, 150, 30);
+        proceedToPaymentButton.addActionListener(this);
+        add(proceedToPaymentButton);
+ 
+        // Payment Summary TextArea
+        paymentSummaryTextArea = new JTextArea();
+        paymentSummaryTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(paymentSummaryTextArea);
+        scrollPane.setBounds(20, 330, 330, 200);
+        add(scrollPane);
+ 
+        // Choose Seats Button
+        chooseSeatsButton = new JButton("Choose Seats");
+        chooseSeatsButton.setBounds(200, 220, 150, 30);
+        chooseSeatsButton.addActionListener(this);
+        chooseSeatsButton.setEnabled(false); // Disabled by default
+        add(chooseSeatsButton);
+
+        setLayout(null);
+        setVisible(true);
+        
+        
+        
+        // Order Food Button
+        orderFoodButton = new JButton("Order Food");
+        orderFoodButton.setBounds(20, 260, 150, 30); // Adjusted Y-coordinate
+        orderFoodButton.addActionListener(this);
+        add(orderFoodButton);  
+        
+        backButton = new JButton("Back");
+        backButton.setBounds(20, 550, 150, 30);
+        backButton.addActionListener(this);
+        add(backButton);
+        
+        modeOfPaymentButton = new JButton("Mode of Payment");
+        modeOfPaymentButton.setBounds(200, 260, 150, 30); // Adjusted Y-coordinate
+        modeOfPaymentButton.addActionListener(this);
+        add(modeOfPaymentButton);
+
+        modeOfPaymentFrame = new JFrame("Mode of Payment");
+        modeOfPaymentFrame.setSize(350, 250);
+        modeOfPaymentFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        modeOfPaymentFrame.setLayout(new FlowLayout());
+        JButton selectPaymentButton = new JButton("Select Payment");
+        selectPaymentButton.addActionListener(e -> ModeOfPayment());
+        modeOfPaymentFrame.add(selectPaymentButton);
+    }
+ 
+    private void chooseSeats() {
+        // Create a new JDialog for seat selection
+        JDialog seatSelectionDialog = new JDialog(this, "Seat Selection", true);
+        seatSelectionDialog.setSize(700, 500);
+        seatSelectionDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        seatSelectionDialog.setLocationRelativeTo(this);
+ 
+        // Main panel for seat selection
+        JPanel mainPanel = new JPanel(new BorderLayout());
+ 
+        // Movie screen label
+        JLabel movieScreenLabel = new JLabel("Movie Screen");
+        movieScreenLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        mainPanel.add(movieScreenLabel, BorderLayout.NORTH);
+ 
+        // Seat panel
+        JPanel seatPanel = new JPanel(new GridLayout(18, 48, 5, 5));
+        seatPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding
+        char rowChar = 'A';
+        for (int row = 0; row < 11; row++) {
+            for (int col = 18; col <= 48; col++) {
+                String seatLabel = String.format("%c%02d", rowChar, col); // Seat label with double-digit numbers
+                JButton seatButton = new JButton(seatLabel);
+                seatButton.setPreferredSize(new Dimension(20, 20)); // Set seat button size
+                seatButton.setMargin(new Insets(0, 0, 0, 0)); // Remove button margin
+                seatButton.setBackground(Color.BLUE); // Default color for unavailable seats
+                seatButton.setForeground(Color.WHITE); // Set text color
+                seatButton.addActionListener(e -> {
+                    if (seatButton.getBackground() == Color.BLUE) {
+                        seatButton.setBackground(Color.RED); // Change color to indicate selected seat
+                    } else if (seatButton.getBackground() == Color.RED) {
+                        seatButton.setBackground(Color.BLUE); // Change color back to indicate deselected seat
+                    }
+                });
+                seatPanel.add(seatButton);
+            }
+            rowChar++;
+        }
+ 
+        // Symbol panel
+        JPanel symbolPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel unavailableLabel = new JLabel("Unavailable", new ImageIcon("unavailable.png"), JLabel.CENTER);
+        JLabel availableLabel = new JLabel("Available", new ImageIcon("available.png"), JLabel.CENTER);
+        JLabel reservedLabel = new JLabel("Reserved", new ImageIcon("reserved.png"), JLabel.CENTER);
+        symbolPanel.add(unavailableLabel);
+        symbolPanel.add(availableLabel);
+        symbolPanel.add(reservedLabel);
+ 
+        // OK Button
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(e -> {
+            // Proceed with payment logic
+            StringBuilder selectedSeats = new StringBuilder();
+            Component[] components = seatPanel.getComponents();
+            int selectedCount = 0;
+            for (Component component : components) {
+                if (component instanceof JButton) {
+                    JButton seatButton = (JButton) component;
+                    if (seatButton.getBackground() == Color.RED) {
+                        selectedSeats.append(seatButton.getText()).append(", "); // Add selected seat to the string
+                        selectedCount++;
+                    }
+                }
+            }
+            if (selectedCount == (int) ticketSpinner.getValue()) {
+                String paymentSummaryText = paymentSummaryTextArea.getText();
+                String selectedSeatsString = selectedSeats.toString().trim();
+                paymentSummaryTextArea.setText(paymentSummaryText + "\nSelected Seats: " + selectedSeatsString);
+                seatSelectionDialog.dispose();
+            } else {
+                JOptionPane.showMessageDialog(seatSelectionDialog, "Please select " + ticketSpinner.getValue() + " seats.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+ 
+        // Cancel Button
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(e -> {
+            // Clear selected seats
+            Component[] components = seatPanel.getComponents();
+            for (Component component : components) {
+                if (component instanceof JButton) {
+                    JButton seatButton = (JButton) component;
+                    if (seatButton.getBackground() == Color.RED) {
+                        seatButton.setBackground(Color.BLUE); // Deselect seat
+                    }
+                }
+            }
+        });
+ 
+        // Add the seat panel, symbol panel, OK button, and Cancel button to the main panel
+        mainPanel.add(seatPanel, BorderLayout.CENTER);
+        mainPanel.add(symbolPanel, BorderLayout.SOUTH);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        seatSelectionDialog.add(mainPanel, BorderLayout.CENTER);
+ 
+        seatSelectionDialog.setVisible(true);
+    }
+ 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+    if (e.getSource() == movieComboBox) {
+        updateInfoLabel();
+    } else if (e.getSource() == scheduleButton) {
+        generatePaymentSummary("Schedule");
+        chooseSeatsButton.setEnabled(true);
+    } else if (e.getSource() == proceedToPaymentButton) {
+        proceedToPayment();
+    } else if (e.getSource() == chooseSeatsButton) {
+        chooseSeats();
+    } else if (e.getSource() == orderFoodButton) {
+        orderFood();
+    } else if (e.getSource() == backButton) {
+        // Close the Cinemapay frame
+        dispose();
+    } else if (e.getSource() == modeOfPaymentButton) {
+            modeOfPaymentFrame.setLocationRelativeTo(this);
+            modeOfPaymentFrame.setVisible(true);
+            this.setEnabled(false);
+    }
+}
+ 
+    private void updateInfoLabel() {
+        String selectedMovie = (String) movieComboBox.getSelectedItem();
+        int index = -1;
+ 
+        // Find the index of the selected movie
+        for (int i = 0; i < movies.length; i++) {
+            if (movies[i].equals(selectedMovie)) {
+                index = i;
+                break;
+            }
+        }
+ 
+        // Check if the index is valid
+        if (index != -1 && index < moviePrices.length) {
+            double ticketPrice = moviePrices[index][0];
+            double webAdminFee = moviePrices[index][1];
+            infoLabel.setText("Ticket Price: " + ticketPrice + " php, Web Admin Fee: " + webAdminFee + " php");
+        }
+    }
+ 
+    private void generatePaymentSummary(String action) {
+        String selectedMovie = (String) movieComboBox.getSelectedItem();
+        String selectedSchedule = (String) scheduleComboBox.getSelectedItem();
+        String selectedWatchIn = (String) watchInComboBox.getSelectedItem();
+        String selectedCinema = (String) cinemaComboBox.getSelectedItem();
+        String selectedDate = (String) dateComboBox.getSelectedItem();
+        int selectedTickets = (int) ticketSpinner.getValue();
+ 
+        double ticketPrice;
+        double webAdminFee = 20.00 * selectedTickets;
+ 
+        // Determine ticket price based on selected watch in
+        if (selectedWatchIn.equals("2D")) {
+            ticketPrice = 330.00 * selectedTickets;
+        } else if (selectedWatchIn.equals("3D")) {
+            ticketPrice = 380.00 * selectedTickets;
+        } else {
+            // For other watch in options, use the default movie prices
+            int index = -1;
+            for (int i = 0; i < movies.length; i++) {
+                if (movies[i].equals(selectedMovie)) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index != -1) {
+                ticketPrice = moviePrices[index][0] * selectedTickets;
+                webAdminFee = moviePrices[index][1] * selectedTickets;
+            } else {
+                ticketPrice = 0.00; // Default ticket price
+            }
+        }
+ 
+        StringBuilder paymentSummary = new StringBuilder();
+        paymentSummary.append(selectedMovie).append("\n")
+                .append(selectedDate).append("\n")
+                .append(selectedCinema).append("\n")
+                .append(selectedSchedule).append("\n\n")
+                .append("Ticket(s)").append("\n")
+                .append(selectedTickets).append("x ").append(String.format("%.2f", ticketPrice / selectedTickets)).append(" php").append("\n\n")
+                .append("Web Admin Fee").append("\n")
+                .append(selectedTickets).append("x ").append(String.format("%.2f", webAdminFee / selectedTickets)).append(" php").append("\n\n")
+                .append("Total Price: ").append(String.format("%.2f", ticketPrice + webAdminFee)).append(" php");
+ 
+        paymentSummaryTextArea.setText(paymentSummary.toString());
+    }
+ 
+    private String[] getDates() {
+        // Using Gregorian calendar for date selection
+        String[] dates = new String[314]; // Total 314 days from February to December 2024
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2024);
+        cal.set(Calendar.MONTH, Calendar.FEBRUARY);
+        for (int i = 0; i < 29; i++) {
+            cal.set(Calendar.DAY_OF_MONTH, i + 1);
+            dates[i] = (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.YEAR);
+        }
+        cal.set(Calendar.MONTH, Calendar.MARCH);
+        for (int i = 0; i < 31; i++) {
+            cal.set(Calendar.DAY_OF_MONTH, i + 1);
+            dates[i + 29] = (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.YEAR);
+        }
+        // Continue for remaining months
+        for (int month = Calendar.APRIL; month <= Calendar.DECEMBER; month++) {
+            cal.set(Calendar.MONTH, month);
+            int daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            for (int i = 0; i < daysInMonth; i++) {
+                cal.set(Calendar.DAY_OF_MONTH, i + 1);
+                dates[(month - Calendar.APRIL + 1) * 31 + i] = (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.YEAR);
+            }
+        }
+        return dates;
+    }
+ 
+        private void proceedToPayment() {
+        String selectedSeats = paymentSummaryTextArea.getText().contains("Selected Seats:") ? paymentSummaryTextArea.getText().split("Selected Seats:")[1].trim() : "";
+        if (selectedSeats.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please choose seats first.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            String paymentSummary = paymentSummaryTextArea.getText();
+            cinemaPayment = new Cinemapayment(paymentSummary);
+            cinemaPayment.setVisible(true);
+        }
+    
+}
+
+        private void orderFood() {
+        // Open the Cinemafood frame
+            new cinemafood();
+            }
+
+        private void ModeOfPayment() {
+    // Options for mode of payment
+    String[] paymentOptions = {"On-Hand Cash", "Credit Card", "Debit Card", "PayPal", "GCash"};
+
+    // Create a JList with payment options
+    JList<String> paymentList = new JList<>(paymentOptions);
+    paymentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    // Add a listener to handle the selection
+    paymentList.addListSelectionListener(e -> {
+        if (!e.getValueIsAdjusting()) {
+            String selectedPayment = paymentList.getSelectedValue();
+            if (selectedPayment.equals("On-Hand Cash")) {
+                displayCashPaymentUI();
+                
+            } else if (selectedPayment.equals("Credit Card")) {
+                displayCreditCardInfoUI();
+                
+            } else if (selectedPayment.equals("Debit Card")) {
+                displayDebitCardInfoUI();
+                
+            } else if (selectedPayment.equals("PayPal")) {
+                displayPayPalInfoUI();
+                
+            } else if (selectedPayment.equals("GCash")) {
+                displayGCashInfoUI();
+                
+            }else {
+                JOptionPane.showMessageDialog(modeOfPaymentFrame, "Selected Payment: " + selectedPayment);
+                modeOfPaymentFrame.dispose(); // Close mode of payment window after selection
+                this.setEnabled(true); // Enable the Cinemapay window
+            }
+        }
+    });
+
+    // Add the JList to a JScrollPane
+    JScrollPane scrollPane = new JScrollPane(paymentList);
+    scrollPane.setPreferredSize(new Dimension(250, 150));
+
+    // Add the JScrollPane to the modeOfPaymentFrame
+    modeOfPaymentFrame.getContentPane().removeAll(); // Clear existing components
+    modeOfPaymentFrame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+    modeOfPaymentFrame.revalidate();
+    modeOfPaymentFrame.repaint();
+}
+
+private void displayCashPaymentUI() {
+    JPanel cashPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+
+    JLabel amountLabel = new JLabel("Amount to Pay:");
+    JTextField amountField = new JTextField();
+    JLabel changeLabel = new JLabel("Change:");
+    JTextField changeField = new JTextField();
+    changeField.setEditable(false); // Change field is read-only
+
+        JButton confirmButton = new JButton("Confirm");
+    confirmButton.addActionListener(e -> {
+        try {
+            double amountPaid = Double.parseDouble(amountField.getText());
+            String[] lines = paymentSummaryTextArea.getText().split("\n");
+            double totalPrice = 0.0;
+            // Find the line containing the total price
+            for (String line : lines) {
+                if (line.startsWith("Total Price:")) {
+                    totalPrice = Double.parseDouble(line.split(":")[1].trim().split(" ")[0]);
+                    break;
+                }
+            }
+            double change = amountPaid - totalPrice;
+            if (change >= 0) {
+                // Format the change with Philippine peso sign and two decimal places
+                String formattedChange = String.format("₱%.2f", change);
+                changeField.setText(formattedChange);
+            } else {
+                JOptionPane.showMessageDialog(modeOfPaymentFrame, "Insufficient payment amount.");
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(modeOfPaymentFrame, "Invalid input. Please enter a valid number.");
+        }
+    });
+    JButton payButton = new JButton("Pay");
+    payButton.addActionListener(e -> {
+        // Implement payment logic here
+        double amountPaid = Double.parseDouble(amountField.getText());
+        double totalPrice = getTotalPrice(); // Implement this method to get the total price
+        if (amountPaid >= totalPrice) {
+            JOptionPane.showMessageDialog(modeOfPaymentFrame, "Payment successful!");
+            modeOfPaymentFrame.dispose(); // Close mode of payment window after successful payment
+            this.setEnabled(true); // Enable the Cinemapay window
+        } else {
+            JOptionPane.showMessageDialog(modeOfPaymentFrame, "Insufficient payment amount.");
+        }
+    });
+
+
+    cashPanel.add(amountLabel);
+    cashPanel.add(amountField);
+    cashPanel.add(changeLabel);
+    cashPanel.add(changeField);
+    cashPanel.add(confirmButton);
+    cashPanel.add(payButton);
+
+    // Add the cashPanel to the modeOfPaymentFrame
+    modeOfPaymentFrame.getContentPane().removeAll(); // Clear existing components
+    modeOfPaymentFrame.getContentPane().add(cashPanel, BorderLayout.CENTER);
+    modeOfPaymentFrame.revalidate();
+    modeOfPaymentFrame.repaint();
+    
+}
+// Method to get the total price
+private double getTotalPrice() {
+    // Implement this method to calculate the total price based on selected movie, tickets, etc.
+    return 0; // Placeholder, replace with actual calculation
+}
+private void displayCreditCardInfoUI() {
+    JPanel creditCardPanel = new JPanel(new GridLayout(6, 2, 5, 5));
+
+    JLabel nameLabel = new JLabel("Name on Card:");
+    JTextField nameField = new JTextField();
+    JLabel cardNumberLabel = new JLabel("Card Number:");
+    JTextField cardNumberField = new JTextField();
+    JLabel expiryDateLabel = new JLabel("Expiry Date (MM/YY):");
+    JTextField expiryDateField = new JTextField();
+    JLabel cvvLabel = new JLabel("CVV:");
+    JPasswordField cvvField = new JPasswordField();
+
+    JButton confirmButton = new JButton("Confirm");
+    confirmButton.addActionListener(e -> {
+    // Retrieve entered information
+    String name = nameField.getText();
+    String cardNumber = cardNumberField.getText();
+    String expiryDate = expiryDateField.getText();
+    String cvv = new String(cvvField.getPassword());
+
+    // Perform validation and further processing
+    if (isValidCreditCardInfo(name, cardNumber, expiryDate, cvv)) {
+        // Process the credit card information
+        JOptionPane.showMessageDialog(modeOfPaymentFrame, "Credit card information confirmed!");
+        modeOfPaymentFrame.dispose(); // Close mode of payment window after confirmation
+        this.setEnabled(true); // Enable the Cinemapay window
+
+        // Open the receipt window
+        openReceiptWindow();
+    } else {
+        JOptionPane.showMessageDialog(modeOfPaymentFrame, "Invalid credit card information. Please check and try again.");
+    }
+});
+
+
+    creditCardPanel.add(nameLabel);
+    creditCardPanel.add(nameField);
+    creditCardPanel.add(cardNumberLabel);
+    creditCardPanel.add(cardNumberField);
+    creditCardPanel.add(expiryDateLabel);
+    creditCardPanel.add(expiryDateField);
+    creditCardPanel.add(cvvLabel);
+    creditCardPanel.add(cvvField);
+    creditCardPanel.add(new JLabel()); 
+    creditCardPanel.add(confirmButton);
+
+    modeOfPaymentFrame.getContentPane().removeAll(); 
+    modeOfPaymentFrame.getContentPane().add(creditCardPanel, BorderLayout.CENTER);
+    modeOfPaymentFrame.revalidate();
+    modeOfPaymentFrame.repaint();
+}
+
+private boolean isValidCreditCardInfo(String name, String cardNumber, String expiryDate, String cvv) {
+    
+    return true; 
+}
+
+private void displayDebitCardInfoUI() {
+    JPanel debitCardPanel = new JPanel(new GridLayout(6, 2, 5, 5));
+
+    JLabel nameLabel = new JLabel("Name on Card:");
+    JTextField nameField = new JTextField();
+    JLabel cardNumberLabel = new JLabel("Card Number:");
+    JTextField cardNumberField = new JTextField();
+    JLabel expiryDateLabel = new JLabel("Expiry Date (MM/YY):");
+    JTextField expiryDateField = new JTextField();
+    JLabel cvvLabel = new JLabel("CVV:");
+    JPasswordField cvvField = new JPasswordField();
+
+    JButton confirmButton = new JButton("Confirm");
+    confirmButton.addActionListener(e -> {
+        String name = nameField.getText();
+        String cardNumber = cardNumberField.getText();
+        String expiryDate = expiryDateField.getText();
+        String cvv = new String(cvvField.getPassword());
+
+        if (isValidDebitCardInfo(name, cardNumber, expiryDate, cvv)) {
+            JOptionPane.showMessageDialog(modeOfPaymentFrame, "Debit card information confirmed!");
+            modeOfPaymentFrame.dispose(); 
+            this.setEnabled(true); 
+
+            
+            openReceiptWindow();
+        } else {
+            JOptionPane.showMessageDialog(modeOfPaymentFrame, "Invalid debit card information. Please check and try again.");
+        }
+    });
+
+    debitCardPanel.add(nameLabel);
+    debitCardPanel.add(nameField);
+    debitCardPanel.add(cardNumberLabel);
+    debitCardPanel.add(cardNumberField);
+    debitCardPanel.add(expiryDateLabel);
+    debitCardPanel.add(expiryDateField);
+    debitCardPanel.add(cvvLabel);
+    debitCardPanel.add(cvvField);
+    debitCardPanel.add(new JLabel()); 
+    debitCardPanel.add(confirmButton);
+
+    modeOfPaymentFrame.getContentPane().removeAll(); 
+    modeOfPaymentFrame.getContentPane().add(debitCardPanel, BorderLayout.CENTER);
+    modeOfPaymentFrame.revalidate();
+    modeOfPaymentFrame.repaint();
+}
+
+private boolean isValidDebitCardInfo(String name, String cardNumber, String expiryDate, String cvv) {
+
+    return true; 
+}
+private void displayPayPalInfoUI() {
+    JPanel payPalPanel = new JPanel(new GridLayout(6, 2, 5, 5));
+
+    JLabel emailLabel = new JLabel("Email:");
+    JTextField emailField = new JTextField();
+    JLabel passwordLabel = new JLabel("Password:");
+    JPasswordField passwordField = new JPasswordField();
+    JLabel otpLabel = new JLabel("OTP:");
+    JTextField otpField = new JTextField();
+
+JButton sendOTPButton = new JButton("Send OTP");
+sendOTPButton.setEnabled(true); 
+
+sendOTPButton.addActionListener(e -> {
+    
+    sendOTPButton.setEnabled(false);
+    
+    
+    Timer sendTimer = new Timer(5000, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int otp = generateOTP();
+            otpField.setText(String.valueOf(otp)); 
+            
+            
+            Timer enableTimer = new Timer(10000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    sendOTPButton.setEnabled(true); 
+                }
+            });
+            enableTimer.setRepeats(false); 
+            enableTimer.start(); 
+        }
+    });
+    sendTimer.setRepeats(false); 
+    sendTimer.start();
+});
+
+    JButton confirmButton = new JButton("Confirm");
+    confirmButton.addActionListener(e -> {
+        
+        String email = emailField.getText();
+        String password = new String(passwordField.getPassword());
+        String otp = otpField.getText();
+
+        if (isValidPayPalInfo(email, password, otp)) {
+            JOptionPane.showMessageDialog(modeOfPaymentFrame, "PayPal information confirmed!");
+            modeOfPaymentFrame.dispose(); 
+            this.setEnabled(true); 
+            
+            openReceiptWindow();
+        } else {
+            JOptionPane.showMessageDialog(modeOfPaymentFrame, "Invalid PayPal information. Please check and try again.");
+        }
+    });
+
+
+    payPalPanel.add(emailLabel);
+    payPalPanel.add(emailField);
+    payPalPanel.add(passwordLabel);
+    payPalPanel.add(passwordField);
+    payPalPanel.add(otpLabel);
+    payPalPanel.add(otpField);
+    payPalPanel.add(sendOTPButton);
+    payPalPanel.add(confirmButton);
+
+    modeOfPaymentFrame.getContentPane().removeAll(); 
+    modeOfPaymentFrame.getContentPane().add(payPalPanel, BorderLayout.CENTER);
+    modeOfPaymentFrame.revalidate();
+    modeOfPaymentFrame.repaint();
+}
+private int generateOTP() {
+        // Generate a random 6-digit OTP
+        return (int) ((Math.random() * (999999 - 100000)) + 100000);
+    }
+
+private boolean isValidPayPalInfo(String email, String password, String otp) {
+    return !email.isEmpty() && !password.isEmpty() && !otp.isEmpty();
+}
+private void displayGCashInfoUI() {
+    JPanel gcashPanel = new JPanel(new GridLayout(6, 2, 5, 5));
+
+    JLabel mobileNumberLabel = new JLabel("Mobile Number:");
+    JTextField mobileNumberField = new JTextField();
+    JLabel pinCodeLabel = new JLabel("PIN Code:");
+    JPasswordField pinCodeField = new JPasswordField();
+    JLabel otpLabel = new JLabel("OTP:");
+    JTextField otpField = new JTextField();
+
+    JButton sendOTPButton = new JButton("Send OTP");
+    sendOTPButton.setEnabled(true);
+
+    sendOTPButton.addActionListener(e -> {
+        sendOTPButton.setEnabled(false);
+
+        Timer sendTimer = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int otp = generateOTP();
+                otpField.setText(String.valueOf(otp));
+
+                Timer enableTimer = new Timer(10000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        sendOTPButton.setEnabled(true);
+                    }
+                });
+                enableTimer.setRepeats(false);
+                enableTimer.start();
+            }
+        });
+        sendTimer.setRepeats(false);
+        sendTimer.start();
+    });
+
+    JButton confirmButton = new JButton("Confirm");
+    confirmButton.addActionListener(e -> {
+        String mobileNumber = mobileNumberField.getText();
+        String pinCode = new String(pinCodeField.getPassword());
+        String otp = otpField.getText();
+
+        if (isValidGCashInfo(mobileNumber, pinCode, otp)) {
+            JOptionPane.showMessageDialog(modeOfPaymentFrame, "GCash information confirmed!");
+            modeOfPaymentFrame.dispose();
+            this.setEnabled(true);
+            openReceiptWindow();
+        } else {
+            JOptionPane.showMessageDialog(modeOfPaymentFrame, "Invalid GCash information. Please check and try again.");
+        }
+    });
+
+    gcashPanel.add(mobileNumberLabel);
+    gcashPanel.add(mobileNumberField);
+    gcashPanel.add(pinCodeLabel);
+    gcashPanel.add(pinCodeField);
+    gcashPanel.add(otpLabel);
+    gcashPanel.add(otpField);
+    gcashPanel.add(sendOTPButton);
+    gcashPanel.add(confirmButton);
+
+    modeOfPaymentFrame.getContentPane().removeAll();
+    modeOfPaymentFrame.getContentPane().add(gcashPanel, BorderLayout.CENTER);
+    modeOfPaymentFrame.revalidate();
+    modeOfPaymentFrame.repaint();
+}
+
+private boolean isValidGCashInfo(String mobileNumber, String pinCode, String otp) {
+    return !mobileNumber.isEmpty() && !pinCode.isEmpty() && !otp.isEmpty();
+}
+
+
+
+
+    
+ 
+        public static void main(String[] args) {
+        new Cinemapay();
+    }
+} 
