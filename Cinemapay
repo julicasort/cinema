@@ -13,7 +13,6 @@ public class Cinemapay extends JFrame implements ActionListener {
  
     private final JLabel movieLabel;
     private final JLabel infoLabel;
-    private final JComboBox<String> movieComboBox;
     private final JComboBox<String> scheduleComboBox;
     private final JComboBox<String> watchInComboBox;
     private final JComboBox<String> cinemaComboBox;
@@ -40,7 +39,11 @@ public class Cinemapay extends JFrame implements ActionListener {
             {380.00, 30.00} // Spiderman-No Way Home, Jujutsu Kaisen 0
     };
  
-    public Cinemapay() {
+    private String selectedMovie;
+
+    public Cinemapay(String selectedMovie) {
+        this.selectedMovie = selectedMovie;
+        
         setUndecorated(true); // Removes the window decorations
         setTitle("CINEMA TECH");
         setSize(370, 600);
@@ -50,21 +53,19 @@ public class Cinemapay extends JFrame implements ActionListener {
         setBackground(new Color(31, 2, 2));
  
         // Movie Label
-        movieLabel = new JLabel("Select a movie:");
-        movieLabel.setBounds(20, 30, 200, 30);
+        movieLabel = new JLabel("" + selectedMovie);
+        movieLabel.setBounds(20, 30, 200, 50);
+        movieLabel.setFont(movieLabel.getFont().deriveFont(20.0f));
         add(movieLabel);
  
-        // Movie ComboBox
-        movieComboBox = new JComboBox<>(movies);
-        movieComboBox.setBounds(130, 30, 200, 30);
-        movieComboBox.addActionListener(this);
-        add(movieComboBox);
  
         // Info Label
         infoLabel = new JLabel(" ");
         infoLabel.setBounds(20, 60, 360, 30);
         add(infoLabel);
- 
+        
+        this.selectedMovie = selectedMovie;
+        
         // Schedule ComboBox
         scheduleComboBox = new JComboBox<>(schedules);
         scheduleComboBox.setBounds(20, 100, 150, 30);
@@ -250,7 +251,7 @@ public class Cinemapay extends JFrame implements ActionListener {
  
     @Override
     public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == movieComboBox) {
+    if (e.getSource() == selectedMovie) {
         updateInfoLabel();
     } else if (e.getSource() == scheduleButton) {
         generatePaymentSummary("Schedule");
@@ -272,7 +273,7 @@ public class Cinemapay extends JFrame implements ActionListener {
 }
  
     private void updateInfoLabel() {
-        String selectedMovie = (String) movieComboBox.getSelectedItem();
+        String Selectedmovie = (String) selectedMovie;
         int index = -1;
  
         // Find the index of the selected movie
@@ -292,7 +293,7 @@ public class Cinemapay extends JFrame implements ActionListener {
     }
  
     private void generatePaymentSummary(String action) {
-        String selectedMovie = (String) movieComboBox.getSelectedItem();
+        String Selectedmovie = (String) selectedMovie;
         String selectedSchedule = (String) scheduleComboBox.getSelectedItem();
         String selectedWatchIn = (String) watchInComboBox.getSelectedItem();
         String selectedCinema = (String) cinemaComboBox.getSelectedItem();
@@ -311,7 +312,7 @@ public class Cinemapay extends JFrame implements ActionListener {
             // For other watch in options, use the default movie prices
             int index = -1;
             for (int i = 0; i < movies.length; i++) {
-                if (movies[i].equals(selectedMovie)) {
+                if (movies[i].equals(Selectedmovie)) {
                     index = i;
                     break;
                 }
@@ -325,7 +326,7 @@ public class Cinemapay extends JFrame implements ActionListener {
         }
  
         StringBuilder paymentSummary = new StringBuilder();
-        paymentSummary.append(selectedMovie).append("\n")
+        paymentSummary.append(Selectedmovie).append("\n")
                 .append(selectedDate).append("\n")
                 .append(selectedCinema).append("\n")
                 .append(selectedSchedule).append("\n\n")
@@ -523,7 +524,6 @@ private void displayCreditCardInfoUI() {
         modeOfPaymentFrame.dispose(); // Close mode of payment window after confirmation
         this.setEnabled(true); // Enable the Cinemapay window
 
-        // Open the receipt window
         openReceiptWindow();
     } else {
         JOptionPane.showMessageDialog(modeOfPaymentFrame, "Invalid credit card information. Please check and try again.");
@@ -577,7 +577,6 @@ private void displayDebitCardInfoUI() {
             modeOfPaymentFrame.dispose(); 
             this.setEnabled(true); 
 
-            
             openReceiptWindow();
         } else {
             JOptionPane.showMessageDialog(modeOfPaymentFrame, "Invalid debit card information. Please check and try again.");
@@ -756,12 +755,7 @@ private boolean isValidGCashInfo(String mobileNumber, String pinCode, String otp
     return !mobileNumber.isEmpty() && !pinCode.isEmpty() && !otp.isEmpty();
 }
 
-
-
-
-    
- 
         public static void main(String[] args) {
-        new Cinemapay();
+        Cinemapay cinemapay;
     }
 } 
